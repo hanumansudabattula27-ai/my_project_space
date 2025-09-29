@@ -1,103 +1,216 @@
-import Image from "next/image";
+// // src/app/page.tsx
+// "use client";
 
-export default function Home() {
+// import { useEffect, useState } from "react";
+// import { Hero } from "@/components/ui/hero";
+// import { InternalToolsGrid } from "@/components/ui/internal-tools-grid";
+// import { ToolsGrid } from "@/components/ui/tools-grid";
+// import { CommandPaletteSection } from "@/components/ui/command-palette-section";
+// import { ParticleSystem } from "@/components/ui/particle-system";
+// import { ScrollToTop } from "@/components/ui/scroll-to-top";
+
+// // Scroll Progress Indicator Component
+// const ScrollProgress = () => {
+//   const [scrollProgress, setScrollProgress] = useState(0);
+
+//   useEffect(() => {
+//     const updateScrollProgress = () => {
+//       const scrollPx = document.documentElement.scrollTop;
+//       const winHeightPx = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+//       const scrolled = (scrollPx / winHeightPx) * 100;
+//       setScrollProgress(scrolled);
+//     };
+
+//     window.addEventListener('scroll', updateScrollProgress, { passive: true });
+//     return () => window.removeEventListener('scroll', updateScrollProgress);
+//   }, []);
+
+//   return (
+//     <div 
+//       className="scroll-indicator"
+//       style={{ transform: `scaleX(${scrollProgress / 100})` }}
+//     />
+//   );
+// };
+
+// export default function LandingPage() {
+//   const [mounted, setMounted] = useState(false);
+
+//   useEffect(() => {
+//     setMounted(true);
+    
+//     // Add scroll-based parallax effect
+//     const handleScroll = () => {
+//       const scrolled = window.pageYOffset;
+//       const parallaxElements = document.querySelectorAll('.parallax');
+      
+//       parallaxElements.forEach((element) => {
+//         const speed = parseFloat(element.getAttribute('data-speed') || '0.5');
+//         const yPos = -(scrolled * speed);
+//         (element as HTMLElement).style.transform = `translateY(${yPos}px)`;
+//       });
+//     };
+
+//     window.addEventListener('scroll', handleScroll, { passive: true });
+//     return () => window.removeEventListener('scroll', handleScroll);
+//   }, []);
+
+//   if (!mounted) return null;
+
+//   return (
+//     <>
+//       {/* Scroll Progress Indicator */}
+//       <ScrollProgress />
+      
+//       {/* Scroll to Top Button */}
+//       <ScrollToTop />
+      
+//       <div className="command-center-bg min-h-screen text-white relative overflow-x-hidden">
+//         {/* Animated Background Grid with Parallax */}
+//         <div className="fixed inset-0 grid-bg opacity-30 parallax" data-speed="0.2"></div>
+        
+//         {/* Particle System */}
+//         <ParticleSystem />
+
+//         {/* Main Content */}
+//         <div className="relative z-10">
+//           {/* Hero Section */}
+//           <section id="hero" className="scroll-snap-section">
+//             <Hero />
+//           </section>
+
+//           {/* Internal Tools Section */}
+//           <section id="internal-tools" className="scroll-snap-section">
+//             <InternalToolsGrid />
+//           </section>
+
+//           {/* External Tools Section */}
+//           <section id="external-tools" className="scroll-snap-section">
+//             <ToolsGrid />
+//           </section>
+
+//           {/* Command Palette Info */}
+//           <section id="command-palette" className="scroll-snap-section">
+//             <CommandPaletteSection />
+//           </section>
+//         </div>
+//       </div>
+//     </>
+//   );
+// }
+
+
+
+"use client";
+
+import { useEffect, useState } from "react";
+import { Hero } from "@/components/ui/hero";
+import { InternalToolsGrid } from "@/components/ui/internal-tools-grid";
+import { ToolsGrid } from "@/components/ui/tools-grid";
+import { CommandPaletteSection } from "@/components/ui/command-palette-section";
+import { ParticleSystem } from "@/components/ui/particle-system";
+import { ScrollToTop } from "@/components/ui/scroll-to-top";
+import NavWrapper from "@/components/home/navbar/navwrapper";
+import { useTheme } from 'next-themes';
+
+// Scroll Progress Indicator Component
+const ScrollProgress = () => {
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const { theme } = useTheme();
+
+  useEffect(() => {
+    const updateScrollProgress = () => {
+      const scrollPx = document.documentElement.scrollTop;
+      const winHeightPx = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (scrollPx / winHeightPx) * 100;
+      setScrollProgress(scrolled);
+    };
+
+    window.addEventListener('scroll', updateScrollProgress, { passive: true });
+    return () => window.removeEventListener('scroll', updateScrollProgress);
+  }, []);
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div 
+      className={`scroll-indicator ${theme === 'dark' ? 'bg-blue-500' : 'bg-gradient-to-r from-blue-400 to-cyan-500'}`}
+      style={{ transform: `scaleX(${scrollProgress / 100})` }}
+    />
+  );
+};
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+export default function LandingPage() {
+  const [mounted, setMounted] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const { theme } = useTheme();
+
+  useEffect(() => {
+    setMounted(true);
+    
+    // Add scroll-based parallax effect
+    const handleScroll = () => {
+      const scrolled = window.pageYOffset;
+      const parallaxElements = document.querySelectorAll('.parallax');
+      
+      parallaxElements.forEach((element) => {
+        const speed = parseFloat(element.getAttribute('data-speed') || '0.5');
+        const yPos = -(scrolled * speed);
+        (element as HTMLElement).style.transform = `translateY(${yPos}px)`;
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  if (!mounted) return null;
+
+  return (
+    <>
+      {/* Navigation */}
+      <NavWrapper/>
+      
+      {/* Scroll Progress Indicator */}
+      <ScrollProgress />
+      
+      {/* Scroll to Top Button */}
+      <ScrollToTop />
+      
+      <div className={`min-h-screen relative overflow-x-hidden transition-all duration-500 ${
+        theme === 'dark' 
+          ? 'command-center-bg text-white' 
+          : 'ocean-blue-bg text-slate-900'
+      }`}>
+        {/* Animated Background Grid with Parallax */}
+        <div className={`fixed inset-0 grid-bg parallax ${
+          theme === 'dark' ? 'opacity-30' : 'opacity-10'
+        }`} data-speed="0.2"></div>
+        
+        {/* Particle System - only in dark mode */}
+        {theme === 'dark' && <ParticleSystem />}
+
+        {/* Main Content */}
+        <div className="relative z-10">
+          {/* Hero Section */}
+          <section id="hero" className="scroll-snap-section">
+            <Hero />
+          </section>
+
+          {/* Internal Tools Section */}
+          <section id="internal-tools" className="scroll-snap-section">
+            <InternalToolsGrid />
+          </section>
+
+          {/* External Tools Section */}
+          <section id="external-tools" className="scroll-snap-section">
+            <ToolsGrid />
+          </section>
+
+          {/* Command Palette Info */}
+          <section id="command-palette" className="scroll-snap-section">
+            <CommandPaletteSection />
+          </section>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </div>
+    </>
   );
 }
