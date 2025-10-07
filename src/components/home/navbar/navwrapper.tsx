@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import Nav from "./nav";
-import MobileNav from "./mobilenav";
 
 const NavWrapper = () => {
   const openNav = () => {
