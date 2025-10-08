@@ -6,184 +6,532 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const platform = searchParams.get('platform') || 'hydra';
 
-    // Hydra Applications Data
+    // Hydra Applications Data - NEW STRUCTURE
     const hydraApplications = [
       {
-        aimid: 1001,
-        name: 'Payment API',
-        description: 'Payment processing and transaction management system',
-        projects: ['Project Alpha', 'Project Beta'],
-        services: [
-          { serviceName: 'Payment Processing', projectName: 'Project Alpha', environments: { E1: {}, E2: {}, E3: {} } },
-          { serviceName: 'Transaction Handler', projectName: 'Project Alpha', environments: { E1: {}, E2: {}, E3: {} } }
+        aimId: "1001",
+        applicationName: "Payment API",
+        Projects: [
+          {
+            project: "Project Alpha",
+            services: [
+              {
+                serviceName: "Payment Processing",
+                applicationDomain: "Intranet",
+                hostingPlatform: "Hydra",
+                environments: [
+                  {
+                    environmentName: "E1",
+                    GTM: "payment.app.dev.com",
+                    namehydra: "allowpaymenthydra.com",
+                    abcGTM: "",
+                    firewallProfile: "",
+                    Zones: [
+                      {
+                        ZoneName: "Zone A",
+                        vipName: "payment-e1-zona.com",
+                        vipIP: "10.7.78.100",
+                        f5Device: ["device1-payment", "device2-payment"],
+                        firewall: "",
+                        count: "4",
+                        cpu: "8",
+                        memory: "16GB"
+                      },
+                      {
+                        ZoneName: "Zone B",
+                        vipName: "payment-e1-zonb.com",
+                        vipIP: "10.7.78.101",
+                        f5Device: ["device3-payment", "device4-payment"],
+                        firewall: "",
+                        count: "4",
+                        cpu: "8",
+                        memory: "16GB"
+                      }
+                    ]
+                  },
+                  {
+                    environmentName: "E2",
+                    GTM: "payment.app.staging.com",
+                    namehydra: "allowpaymenthydra-stg.com",
+                    abcGTM: "",
+                    firewallProfile: "",
+                    Zones: [
+                      {
+                        ZoneName: "Zone A",
+                        vipName: "payment-e2-zona.com",
+                        vipIP: "10.7.78.110",
+                        f5Device: ["device1-payment-stg", "device2-payment-stg"],
+                        firewall: "",
+                        count: "2",
+                        cpu: "4",
+                        memory: "8GB"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                serviceName: "Transaction Handler",
+                applicationDomain: "Intranet",
+                hostingPlatform: "Hydra",
+                environments: [
+                  {
+                    environmentName: "E1",
+                    GTM: "transaction.app.dev.com",
+                    namehydra: "allowtransactionhydra.com",
+                    abcGTM: "",
+                    firewallProfile: "",
+                    Zones: [
+                      {
+                        ZoneName: "Zone A",
+                        vipName: "transaction-e1-zona.com",
+                        vipIP: "10.7.78.200",
+                        f5Device: ["device1-txn", "device2-txn"],
+                        firewall: "",
+                        count: "2",
+                        cpu: "4",
+                        memory: "8GB"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
         ],
         updatedAt: new Date('2025-01-05'),
       },
       {
-        aimid: 1002,
-        name: 'Auth Service',
-        description: 'Authentication and authorization management',
-        projects: ['Project Alpha'],
-        services: [
-          { serviceName: 'User Authentication', projectName: 'Project Alpha', environments: { E1: {}, E2: {}, E3: {} } },
-          { serviceName: 'OAuth Provider', projectName: 'Project Alpha', environments: { E1: {}, E2: {}, E3: {} } }
+        aimId: "1002",
+        applicationName: "Auth Service",
+        Projects: [
+          {
+            project: "Project Alpha",
+            services: [
+              {
+                serviceName: "User Authentication",
+                applicationDomain: "Internet",
+                hostingPlatform: "Hydra",
+                environments: [
+                  {
+                    environmentName: "E1",
+                    GTM: "auth.app.dev.com",
+                    namehydra: "allowauthhydra.com",
+                    abcGTM: "",
+                    firewallProfile: "",
+                    Zones: [
+                      {
+                        ZoneName: "Zone A",
+                        vipName: "auth-e1-zona.com",
+                        vipIP: "10.7.79.100",
+                        f5Device: ["device1-auth", "device2-auth"],
+                        firewall: "",
+                        count: "6",
+                        cpu: "16",
+                        memory: "32GB"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
         ],
         updatedAt: new Date('2025-01-06'),
       },
       {
-        aimid: 1003,
-        name: 'User Management',
-        description: 'User profile and account management',
-        projects: ['Project Beta', 'Project Gamma'],
-        services: [
-          { serviceName: 'Profile Service', projectName: 'Project Beta', environments: { E1: {}, E2: {}, E3: {} } },
-          { serviceName: 'Account Manager', projectName: 'Project Beta', environments: { E1: {}, E2: {}, E3: {} } },
-          { serviceName: 'User Preferences', projectName: 'Project Gamma', environments: { E1: {}, E2: {}, E3: {} } }
+        aimId: "1003",
+        applicationName: "User Management",
+        Projects: [
+          {
+            project: "Project Beta",
+            services: [
+              {
+                serviceName: "Profile Service",
+                applicationDomain: "Intranet",
+                hostingPlatform: "Hydra",
+                environments: [
+                  {
+                    environmentName: "E1",
+                    GTM: "profile.app.dev.com",
+                    namehydra: "allowprofilehydra.com",
+                    abcGTM: "",
+                    firewallProfile: "",
+                    Zones: [
+                      {
+                        ZoneName: "Zone A",
+                        vipName: "profile-e1-zona.com",
+                        vipIP: "10.7.80.100",
+                        f5Device: ["device1-profile"],
+                        firewall: "",
+                        count: "2",
+                        cpu: "4",
+                        memory: "8GB"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            project: "Project Gamma",
+            services: [
+              {
+                serviceName: "User Preferences",
+                applicationDomain: "Intranet",
+                hostingPlatform: "Hydra",
+                environments: [
+                  {
+                    environmentName: "E1",
+                    GTM: "preferences.app.dev.com",
+                    namehydra: "allowpreferenceshydra.com",
+                    abcGTM: "",
+                    firewallProfile: "",
+                    Zones: [
+                      {
+                        ZoneName: "Zone A",
+                        vipName: "pref-e1-zona.com",
+                        vipIP: "10.7.81.100",
+                        f5Device: ["device1-pref"],
+                        firewall: "",
+                        count: "1",
+                        cpu: "2",
+                        memory: "4GB"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
         ],
         updatedAt: new Date('2025-01-04'),
       },
       {
-        aimid: 1004,
-        name: 'Notification Hub',
-        description: 'Multi-channel notification delivery system',
-        projects: ['Project Gamma'],
-        services: [
-          { serviceName: 'Email Service', projectName: 'Project Gamma', environments: { E1: {}, E2: {}, E3: {} } },
-          { serviceName: 'SMS Gateway', projectName: 'Project Gamma', environments: { E1: {}, E2: {}, E3: {} } },
-          { serviceName: 'Push Notifications', projectName: 'Project Gamma', environments: { E1: {}, E2: {}, E3: {} } }
+        aimId: "1004",
+        applicationName: "Notification Hub",
+        Projects: [
+          {
+            project: "Project Gamma",
+            services: [
+              {
+                serviceName: "Email Service",
+                applicationDomain: "Intranet",
+                hostingPlatform: "Hydra",
+                environments: [
+                  {
+                    environmentName: "E1",
+                    GTM: "email.app.dev.com",
+                    namehydra: "allowemailhydra.com",
+                    abcGTM: "",
+                    firewallProfile: "",
+                    Zones: [
+                      {
+                        ZoneName: "Zone A",
+                        vipName: "email-e1-zona.com",
+                        vipIP: "10.7.82.100",
+                        f5Device: ["device1-email"],
+                        firewall: "",
+                        count: "3",
+                        cpu: "6",
+                        memory: "12GB"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                serviceName: "SMS Gateway",
+                applicationDomain: "Intranet",
+                hostingPlatform: "Hydra",
+                environments: [
+                  {
+                    environmentName: "E1",
+                    GTM: "sms.app.dev.com",
+                    namehydra: "allowsmshydra.com",
+                    abcGTM: "",
+                    firewallProfile: "",
+                    Zones: [
+                      {
+                        ZoneName: "Zone A",
+                        vipName: "sms-e1-zona.com",
+                        vipIP: "10.7.83.100",
+                        f5Device: ["device1-sms"],
+                        firewall: "",
+                        count: "2",
+                        cpu: "4",
+                        memory: "8GB"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
         ],
         updatedAt: new Date('2025-01-07'),
       },
       {
-        aimid: 1005,
-        name: 'Analytics Engine',
-        description: 'Real-time analytics and reporting',
-        projects: ['Project Beta'],
-        services: [
-          { serviceName: 'Data Processor', projectName: 'Project Beta', environments: { E1: {}, E2: {}, E3: {} } },
-          { serviceName: 'Report Generator', projectName: 'Project Beta', environments: { E1: {}, E2: {}, E3: {} } }
+        aimId: "1005",
+        applicationName: "Analytics Engine",
+        Projects: [
+          {
+            project: "Project Beta",
+            services: [
+              {
+                serviceName: "Data Processor",
+                applicationDomain: "Intranet",
+                hostingPlatform: "Hydra",
+                environments: [
+                  {
+                    environmentName: "E1",
+                    GTM: "analytics.app.dev.com",
+                    namehydra: "allowanalyticshydra.com",
+                    abcGTM: "",
+                    firewallProfile: "",
+                    Zones: [
+                      {
+                        ZoneName: "Zone A",
+                        vipName: "analytics-e1-zona.com",
+                        vipIP: "10.7.84.100",
+                        f5Device: ["device1-analytics"],
+                        firewall: "",
+                        count: "4",
+                        cpu: "16",
+                        memory: "64GB"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
         ],
         updatedAt: new Date('2025-01-03'),
       },
-      {
-        aimid: 1006,
-        name: 'Reporting Service',
-        description: 'Business intelligence and reporting dashboard',
-        projects: ['Project Alpha', 'Project Beta'],
-        services: [
-          { serviceName: 'Dashboard API', projectName: 'Project Alpha', environments: { E1: {}, E2: {}, E3: {} } },
-          { serviceName: 'Data Export', projectName: 'Project Beta', environments: { E1: {}, E2: {}, E3: {} } }
-        ],
-        updatedAt: new Date('2025-01-02'),
-      },
-      {
-        aimid: 1007,
-        name: 'File Storage API',
-        description: 'Document and file management system',
-        projects: ['Project Gamma'],
-        services: [
-          { serviceName: 'File Upload', projectName: 'Project Gamma', environments: { E1: {}, E2: {}, E3: {} } },
-          { serviceName: 'File Retrieval', projectName: 'Project Gamma', environments: { E1: {}, E2: {}, E3: {} } },
-          { serviceName: 'CDN Manager', projectName: 'Project Gamma', environments: { E1: {}, E2: {}, E3: {} } }
-        ],
-        updatedAt: new Date('2025-01-06'),
-      },
-      {
-        aimid: 1008,
-        name: 'Search Service',
-        description: 'Full-text search and indexing',
-        projects: ['Project Alpha'],
-        services: [
-          { serviceName: 'Indexer', projectName: 'Project Alpha', environments: { E1: {}, E2: {}, E3: {} } },
-          { serviceName: 'Search API', projectName: 'Project Alpha', environments: { E1: {}, E2: {}, E3: {} } }
-        ],
-        updatedAt: new Date('2025-01-05'),
-      },
-      {
-        aimid: 1009,
-        name: 'API Gateway',
-        description: 'Centralized API routing and load balancing',
-        projects: ['Project Alpha', 'Project Beta', 'Project Gamma'],
-        services: [
-          { serviceName: 'Gateway Router', projectName: 'Project Alpha', environments: { E1: {}, E2: {}, E3: {} } },
-          { serviceName: 'Rate Limiter', projectName: 'Project Beta', environments: { E1: {}, E2: {}, E3: {} } },
-          { serviceName: 'Load Balancer', projectName: 'Project Gamma', environments: { E1: {}, E2: {}, E3: {} } }
-        ],
-        updatedAt: new Date('2025-01-07'),
-      },
-      {
-        aimid: 1010,
-        name: 'Cache Manager',
-        description: 'Distributed caching and session management',
-        projects: ['Project Beta'],
-        services: [
-          { serviceName: 'Redis Cache', projectName: 'Project Beta', environments: { E1: {}, E2: {}, E3: {} } },
-          { serviceName: 'Session Store', projectName: 'Project Beta', environments: { E1: {}, E2: {}, E3: {} } }
-        ],
-        updatedAt: new Date('2025-01-04'),
-      },
-      {
-        aimid: 1011,
-        name: 'Logging Service',
-        description: 'Centralized logging and monitoring',
-        projects: ['Project Alpha', 'Project Gamma'],
-        services: [
-          { serviceName: 'Log Aggregator', projectName: 'Project Alpha', environments: { E1: {}, E2: {}, E3: {} } },
-          { serviceName: 'Metrics Collector', projectName: 'Project Gamma', environments: { E1: {}, E2: {}, E3: {} } },
-          { serviceName: 'Alert Manager', projectName: 'Project Gamma', environments: { E1: {}, E2: {}, E3: {} } }
-        ],
-        updatedAt: new Date('2025-01-06'),
-      },
     ];
 
-    // Non-Hydra Applications Data
+    // Non-Hydra Applications Data - NEW STRUCTURE
     const nonHydraApplications = [
       {
-        aimid: 2001,
-        name: 'Legacy Billing System',
-        description: 'TIMS-based billing and invoicing',
-        projects: ['Legacy Systems'],
-        services: [{ serviceName: 'Invoice Generator', projectName: 'Legacy Systems', environments: { E1: {}, E2: {}, E3: {} } }],
+        aimId: "2001",
+        applicationName: "Legacy Billing System",
+        Projects: [
+          {
+            project: "Legacy Systems",
+            services: [
+              {
+                serviceName: "Invoice Generator",
+                applicationDomain: "Intranet",
+                hostingPlatform: "TIMS",
+                environments: [
+                  {
+                    environmentName: "Production",
+                    GTM: "billing.legacy.com",
+                    namehydra: "",
+                    abcGTM: "",
+                    firewallProfile: "",
+                    Zones: [
+                      {
+                        ZoneName: "Main",
+                        vipName: "billing-prod.com",
+                        vipIP: "192.168.1.100",
+                        f5Device: ["legacy-device1"],
+                        firewall: "",
+                        count: "1",
+                        cpu: "4",
+                        memory: "8GB"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
         updatedAt: new Date('2024-12-20'),
       },
       {
-        aimid: 2002,
-        name: 'Customer Portal',
-        description: 'Legacy customer self-service portal',
-        projects: ['Legacy Systems', 'Customer Services'],
-        services: [
-          { serviceName: 'Portal Frontend', projectName: 'Legacy Systems', environments: { E1: {}, E2: {}, E3: {} } },
-          { serviceName: 'Portal Backend', projectName: 'Customer Services', environments: { E1: {}, E2: {}, E3: {} } }
+        aimId: "2002",
+        applicationName: "Customer Portal",
+        Projects: [
+          {
+            project: "Legacy Systems",
+            services: [
+              {
+                serviceName: "Portal Frontend",
+                applicationDomain: "Internet",
+                hostingPlatform: "TIMS",
+                environments: [
+                  {
+                    environmentName: "Production",
+                    GTM: "portal.customer.com",
+                    namehydra: "",
+                    abcGTM: "",
+                    firewallProfile: "",
+                    Zones: [
+                      {
+                        ZoneName: "Main",
+                        vipName: "portal-prod.com",
+                        vipIP: "192.168.2.100",
+                        f5Device: ["legacy-portal1"],
+                        firewall: "",
+                        count: "2",
+                        cpu: "4",
+                        memory: "8GB"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
         ],
         updatedAt: new Date('2024-12-28'),
       },
       {
-        aimid: 2003,
-        name: 'Inventory Management',
-        description: 'Legacy warehouse and inventory system',
-        projects: ['Operations'],
-        services: [
-          { serviceName: 'Stock Tracker', projectName: 'Operations', environments: { E1: {}, E2: {}, E3: {} } },
-          { serviceName: 'Order Processor', projectName: 'Operations', environments: { E1: {}, E2: {}, E3: {} } }
+        aimId: "2003",
+        applicationName: "Inventory Management",
+        Projects: [
+          {
+            project: "Operations",
+            services: [
+              {
+                serviceName: "Stock Tracker",
+                applicationDomain: "Intranet",
+                hostingPlatform: "Legacy",
+                environments: [
+                  {
+                    environmentName: "Production",
+                    GTM: "inventory.ops.com",
+                    namehydra: "",
+                    abcGTM: "",
+                    firewallProfile: "",
+                    Zones: [
+                      {
+                        ZoneName: "Main",
+                        vipName: "inventory-prod.com",
+                        vipIP: "192.168.3.100",
+                        f5Device: ["ops-device1"],
+                        firewall: "",
+                        count: "1",
+                        cpu: "2",
+                        memory: "4GB"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
         ],
         updatedAt: new Date('2025-01-02'),
       },
       {
-        aimid: 2004,
-        name: 'HR System',
-        description: 'Employee management and payroll',
-        projects: ['HR Operations'],
-        services: [{ serviceName: 'Payroll Service', projectName: 'HR Operations', environments: { E1: {}, E2: {}, E3: {} } }],
+        aimId: "2004",
+        applicationName: "HR System",
+        Projects: [
+          {
+            project: "HR Operations",
+            services: [
+              {
+                serviceName: "Payroll Service",
+                applicationDomain: "Intranet",
+                hostingPlatform: "Legacy",
+                environments: [
+                  {
+                    environmentName: "Production",
+                    GTM: "payroll.hr.com",
+                    namehydra: "",
+                    abcGTM: "",
+                    firewallProfile: "",
+                    Zones: [
+                      {
+                        ZoneName: "Main",
+                        vipName: "payroll-prod.com",
+                        vipIP: "192.168.4.100",
+                        f5Device: ["hr-device1"],
+                        firewall: "",
+                        count: "1",
+                        cpu: "4",
+                        memory: "8GB"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
         updatedAt: new Date('2024-12-15'),
       },
       {
-        aimid: 2005,
-        name: 'CRM Platform',
-        description: 'Customer relationship management',
-        projects: ['Customer Services', 'Sales'],
-        services: [
-          { serviceName: 'Contact Manager', projectName: 'Customer Services', environments: { E1: {}, E2: {}, E3: {} } },
-          { serviceName: 'Lead Tracker', projectName: 'Sales', environments: { E1: {}, E2: {}, E3: {} } }
+        aimId: "2005",
+        applicationName: "CRM Platform",
+        Projects: [
+          {
+            project: "Customer Services",
+            services: [
+              {
+                serviceName: "Contact Manager",
+                applicationDomain: "Intranet",
+                hostingPlatform: "Legacy",
+                environments: [
+                  {
+                    environmentName: "Production",
+                    GTM: "crm.services.com",
+                    namehydra: "",
+                    abcGTM: "",
+                    firewallProfile: "",
+                    Zones: [
+                      {
+                        ZoneName: "Main",
+                        vipName: "crm-prod.com",
+                        vipIP: "192.168.5.100",
+                        f5Device: ["crm-device1"],
+                        firewall: "",
+                        count: "2",
+                        cpu: "8",
+                        memory: "16GB"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            project: "Sales",
+            services: [
+              {
+                serviceName: "Lead Tracker",
+                applicationDomain: "Intranet",
+                hostingPlatform: "Legacy",
+                environments: [
+                  {
+                    environmentName: "Production",
+                    GTM: "leads.sales.com",
+                    namehydra: "",
+                    abcGTM: "",
+                    firewallProfile: "",
+                    Zones: [
+                      {
+                        ZoneName: "Main",
+                        vipName: "leads-prod.com",
+                        vipIP: "192.168.5.101",
+                        f5Device: ["sales-device1"],
+                        firewall: "",
+                        count: "1",
+                        cpu: "4",
+                        memory: "8GB"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
         ],
         updatedAt: new Date('2025-01-01'),
       },

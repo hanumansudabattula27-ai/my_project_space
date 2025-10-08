@@ -1,47 +1,51 @@
-// src/types/index.ts
+// src/types/index.ts - Add metadata to all interfaces
 
 export interface Application {
-  aimid: number;
-  name?: string;
-  description?: string;
-  projects: string[];
-  services: Service[];
+  aimId: string;
+  applicationName: string;
+  Projects: Project[];
+  metadata?: Record<string, any>;  // ✅ Added
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-export interface Service {
-  serviceName: string;
-  projectName: string;
-  environments: Environments;
+export interface Project {
+  project: string;
+  services: Service[];
+  metadata?: Record<string, any>;  // ✅ Added
 }
 
-export interface Environments {
-  E1: Environment;
-  E2: Environment;
-  E3: Environment;
+export interface Service {
+  serviceName: string;
+  applicationDomain: string;
+  hostingPlatform: string;
+  environments: Environment[];
+  metadata?: Record<string, any>;  // ✅ Added
 }
 
 export interface Environment {
-  envName: string;
-  initialUrl1: string;
-  secondUrl: string;
-  gtmName: string;
-  profile: string;
-  zones: Zone[];
+  environmentName: string;
+  GTM: string;
+  namehydra: string;
+  abcGTM: string;
+  firewallProfile?: string;
+  Zones: Zone[];
+  metadata?: Record<string, any>;  // ✅ Added
 }
 
 export interface Zone {
-  zoneName: string;
-  zonevipname: string;
-  zonevipIp: string;
-  device: string;
+  ZoneName: string;
+  vipName: string;
+  vipIP: string;
+  f5Device: string[];
   firewall: string;
-  count: number;
+  count: string;
   cpu: string;
   memory: string;
+  metadata?: Record<string, any>;  // ✅ Added
 }
 
+// Keep existing types...
 export type PlatformType = 'hydra' | 'non-hydra';
 
 export interface Platform {

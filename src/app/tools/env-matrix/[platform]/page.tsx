@@ -6,8 +6,8 @@ import { useParams, useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { Application } from '@/types';
 import ApplicationCard from '@/components/env-matrix/applicationcard';
-import DashboardHeader from '@/components/env-matrix/dashboardheader';
-import { Search, SlidersHorizontal } from 'lucide-react';
+import PlatformDashboardPanel from '@/components/env-matrix/hydra-page-level/platformdashboardpanel';
+import { Search } from 'lucide-react';
 
 export default function PlatformPage() {
   const params = useParams();
@@ -45,23 +45,24 @@ export default function PlatformPage() {
     accent: "bg-teal-600 hover:bg-teal-700",
   };
 
-  useEffect(() => {
-    const fetchApplications = async () => {
-      try {
-        const response = await fetch(`/api/env-matrix/applications?platform=${platform}`);
-        const result = await response.json();
-        
-        if (result.success) {
-          setApplications(result.data);
-          setFilteredApps(result.data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch applications:', error);
-      } finally {
-        setLoading(false);
+  const fetchApplications = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/env-matrix/applications?platform=${platform}`);
+      const result = await response.json();
+      
+      if (result.success) {
+        setApplications(result.data);
+        setFilteredApps(result.data);
       }
-    };
+    } catch (error) {
+      console.error('Failed to fetch applications:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     if (mounted) {
       fetchApplications();
     }
@@ -71,18 +72,16 @@ export default function PlatformPage() {
   useEffect(() => {
     let filtered = applications;
 
-    // Search filter
     if (searchQuery) {
       filtered = filtered.filter(app => 
-        app.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        app.aimid.toString().includes(searchQuery)
+        app.applicationName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        app.aimId?.toString().includes(searchQuery)
       );
     }
 
-    // Project filter
     if (selectedProject !== 'all') {
       filtered = filtered.filter(app => 
-        app.projects.includes(selectedProject)
+        app.Projects?.some(project => project.project === selectedProject)
       );
     }
 
@@ -91,8 +90,18 @@ export default function PlatformPage() {
 
   // Get unique projects
   const allProjects = Array.from(
-    new Set(applications.flatMap(app => app.projects))
+    new Set(applications.flatMap(app => 
+      app.Projects?.map(project => project.project) || []
+    ))
   );
+
+  const handleRefresh = () => {
+    fetchApplications();
+  };
+
+  const handleNewApplication = () => {
+    console.log('New application clicked');
+  };
 
   if (!mounted) {
     return (
@@ -114,17 +123,19 @@ export default function PlatformPage() {
   }
 
   return (
-    <div className={`min-h-screen pt-40 bg-gradient-to-br ${theme.background} ${theme.text}`}>
-      {/* Dashboard Header */}
-      <DashboardHeader 
-        platform={platform} 
-        totalApps={applications.length}
-        theme={theme}
-        isDark={isDark}
-      />
+    <div className={`min-h-screen bg-gradient-to-br ${theme.background} ${theme.text}`}>
+      <div className="max-w-7xl mx-auto px-6 py-8 pt-25">
+        
+        {/* Hero Section - Platform Info */}
+        <PlatformDashboardPanel 
+  platform={platform}
+  totalApps={applications.length}
+  theme={theme}
+  isDark={isDark}
+  onRefresh={handleRefresh}
+  onNewApplication={handleNewApplication}
+/>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Search and Filters */}
         <div className={`${theme.card} border rounded-2xl p-6 mb-8`}>
           <div className="flex flex-col lg:flex-row gap-4">
@@ -219,14 +230,14 @@ export default function PlatformPage() {
             ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' 
             : 'flex flex-col gap-4'
           }>
-            {filteredApps.map((app) => (
+            {filteredApps.map((app, index) => (
               <ApplicationCard
-                key={app.aimid}
+                key={app.aimId || `app-${index}`}
                 application={app}
                 viewMode={viewMode}
                 theme={theme}
                 isDark={isDark}
-                onClick={() => router.push(`/tools/env-matrix/${platform}/${app.aimid}`)}
+                onClick={() => router.push(`/tools/env-matrix/${platform}/${app.aimId}`)}
               />
             ))}
           </div>
