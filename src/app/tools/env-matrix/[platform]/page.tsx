@@ -606,7 +606,7 @@ export default function PlatformApplicationsPage() {
   }
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br ${theme.background} ${theme.text}`}>
+    <div className={`min-h-screen bg-gradient-to-br pt-15 ${theme.background} ${theme.text}`}>
       {/* ADD APPLICATION MODAL */}
       <AddApplicationModal
         isOpen={isModalOpen}

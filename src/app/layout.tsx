@@ -86,12 +86,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <body>
         <CommandMenu />
-        <SmoothScrolling> 
+        {/* <SmoothScrolling>  */}
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <NavWrapper/>
             {children}
           </ThemeProvider>
-        </SmoothScrolling> 
+        {/* </SmoothScrolling>  */}
       </body>
     </html>
   );
