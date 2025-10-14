@@ -1,42 +1,25 @@
-// src/app/api/env-matrix/homepage/route.ts
+// src/app/api/env-matrix/stats/route.ts
 import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
+    // TODO: Replace with actual API calls to get real counts
+    // For now, using static data as example
+    
+    // Example: Fetch from your backend
+    // const hydraResponse = await fetch('YOUR_BACKEND/api/hydra/stats');
+    // const nonHydraResponse = await fetch('YOUR_BACKEND/api/non-hydra/stats');
+    
     const data = {
-      platforms: [
-        {
-          type: 'hydra',
-          name: 'Hydra Platform',
-          description: 'Cloud-native infrastructure and modern services',
-          icon: '🌐',
-          stats: {
-            applications: 5,
-            services: 8,
-            zones: 12,
-          },
-          status: 'online',
-          lastUpdated: Date.now() - (2 * 60 * 60 * 1000),
-        },
-        {
-          type: 'non-hydra',
-          name: 'Non-Hydra Platform',
-          description: 'Legacy systems and traditional applications',
-          icon: '🔧',
-          stats: {
-            applications: 5,
-            services: 7,
-            zones: 5,
-          },
-          status: 'online',
-          lastUpdated: Date.now() - (5 * 60 * 60 * 1000),
-        },
-      ],
-      globalStats: {
-        totalApplications: 10,
-        totalServices: 15,
-        totalZones: 17,
-        totalPlatforms: 2,
+      hydra: {
+        applications: 5,
+        services: 8,
+        zones: 12,
+      },
+      nonHydra: {
+        applications: 5,
+        services: 7,
+        zones: 5,
       },
     };
 
@@ -45,8 +28,9 @@ export async function GET() {
       data,
     });
   } catch (error) {
+    console.error('Failed to fetch stats:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch home data' },
+      { success: false, error: 'Failed to fetch platform statistics' },
       { status: 500 }
     );
   }
