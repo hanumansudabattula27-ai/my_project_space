@@ -429,6 +429,8 @@ import PlatformCard from './platformcard';
 import AddApplicationModal from '@/components/env-matrix/hydra-application-level/addapplicationmodal';
 import { Search, RefreshCw, Plus } from 'lucide-react';
 
+import SmartSearch from './smartsearch'; 
+
 interface PlatformStats {
   applications: number;
   services: number;
@@ -595,31 +597,13 @@ export default function ApplicationHome() {
 
       {/* SEARCH & ACTIONS - BETTER PROPORTIONS */}
       <section className="max-w-6xl mx-auto mb-6">
-        <div className="flex items-center gap-3">
-          <div className="flex-1 relative max-w-3xl">
-            <div className="absolute left-4 top-1/2 -translate-y-1/2">
-              <Search className={theme.textSecondary} size={18} />
-            </div>
-            <input
-              type="text"
-              placeholder="Search applications, services, or environments..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full px-5 py-3 pl-12 text-sm rounded-xl border-2 ${theme.input} focus:outline-none focus:ring-2 ${isDark ? 'focus:ring-teal-500' : 'focus:ring-teal-600'} transition-all`}
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className={`absolute right-3 top-1/2 -translate-y-1/2 ${theme.textSecondary} hover:opacity-70`}
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            )}
-          </div>
+  <div className="flex items-center gap-3">
+    {/* SmartSearch - Takes most space */}
+    <div className="flex-1 max-w-3xl">
+      <SmartSearch theme={theme} isDark={isDark} />
+    </div>
 
-          <button 
+    <button 
       onClick={handleRefresh}
       className={`px-4 py-3 ${theme.card} border rounded-xl text-sm font-semibold ${theme.text} hover:opacity-80 transition-all flex items-center gap-2 whitespace-nowrap`}
     >
@@ -634,9 +618,8 @@ export default function ApplicationHome() {
       <Plus size={16} />
       New Application
     </button>
-        </div>
-      </section>
-
+  </div>
+</section>
       {/* PLATFORMS - BETTER SPACING */}
       <section className="max-w-7xl mx-auto py-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
