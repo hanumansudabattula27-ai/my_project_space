@@ -620,20 +620,20 @@ export default function ApplicationHome() {
           </div>
 
           <button 
-            onClick={handleRefresh}
-            className={`px-4 py-3 ${theme.card} border rounded-xl text-sm font-semibold ${theme.text} hover:opacity-80 transition-all flex items-center gap-2 whitespace-nowrap`}
-          >
-            <RefreshCw size={16} />
-            Refresh
-          </button>
-          
-          <button 
-            onClick={() => setIsModalOpen(true)}
-            className={`px-4 py-3 ${theme.accent} text-white rounded-xl text-sm font-semibold transition-all flex items-center gap-2 shadow-lg hover:scale-105 whitespace-nowrap`}
-          >
-            <Plus size={16} />
-            New Application
-          </button>
+      onClick={handleRefresh}
+      className={`px-4 py-3 ${theme.card} border rounded-xl text-sm font-semibold ${theme.text} hover:opacity-80 transition-all flex items-center gap-2 whitespace-nowrap`}
+    >
+      <RefreshCw size={16} />
+      Refresh
+    </button>
+    
+    <button 
+      onClick={() => setIsModalOpen(true)}
+      className={`px-4 py-3 ${theme.accent} text-white rounded-xl text-sm font-semibold transition-all flex items-center gap-2 shadow-lg hover:scale-105 whitespace-nowrap`}
+    >
+      <Plus size={16} />
+      New Application
+    </button>
         </div>
       </section>
 
