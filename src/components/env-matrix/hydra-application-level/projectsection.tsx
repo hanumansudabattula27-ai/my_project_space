@@ -895,15 +895,13 @@
 
 
 
-
-
-
 // src/components/env-matrix/hydra-application-level/projectsection.tsx
 'use client';
 
-import { useState } from 'react';
-import { Application, Project } from '@/types';
+import { useState, useEffect } from 'react';
+import { Application, Project, Service } from '@/types';
 import ServiceSection from './servicesection';
+import AddItemModal from '@/components/env-matrix/hydra-application-level/additemmodal';
 import { ChevronDown, ChevronRight, FolderOpen, Edit2, Save, X } from 'lucide-react';
 
 interface ProjectSectionProps {
@@ -938,6 +936,15 @@ export default function ProjectSection({
   const [isEditingProject, setIsEditingProject] = useState(false);
   const [editedProject, setEditedProject] = useState(project);
   const [expandedServiceIndex, setExpandedServiceIndex] = useState<number | null>(null);
+  const [isAddServiceModalOpen, setIsAddServiceModalOpen] = useState(false);
+
+  // Reset local edit state when global isEditing becomes false
+  useEffect(() => {
+    if (!isEditing) {
+      setIsEditingProject(false);
+      setEditedProject(project);
+    }
+  }, [isEditing, project]);
 
   const updateProject = (updatedProject: Project) => {
     const updatedProjects = [...application.Projects];
@@ -962,6 +969,15 @@ export default function ProjectSection({
 
   const handleServiceOpen = (serviceIndex: number) => {
     setExpandedServiceIndex(expandedServiceIndex === serviceIndex ? null : serviceIndex);
+  };
+
+  const handleAddServiceSubmit = (newServiceData: Service) => {
+    const updatedServices = [...(project.services || []), newServiceData];
+    const updatedProjectWithService = { ...project, services: updatedServices };
+    updateProject(updatedProjectWithService);
+    // Auto-expand to show new service
+    onProjectOpen(projectIndex);
+    setIsAddServiceModalOpen(false);
   };
 
   // Filter services
@@ -1054,6 +1070,17 @@ export default function ProjectSection({
               </div>
             </>
           )}
+          {isEditing && !isEditingProject && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsAddServiceModalOpen(true);
+              }}
+              className={`px-3 py-2 rounded text-sm font-semibold ${theme.accent} text-white hover:scale-105 transition-all`}
+            >
+              + Service
+            </button>
+          )}
           <span className={`px-3 py-1 rounded text-sm font-bold ${
             isDark ? 'bg-teal-900/30 text-teal-300' : 'bg-teal-100 text-teal-700'
           }`}>
@@ -1094,6 +1121,16 @@ export default function ProjectSection({
           )}
         </div>
       )}
+
+      {/* Add Service Modal */}
+      <AddItemModal
+        isOpen={isAddServiceModalOpen}
+        itemType="service"
+        onClose={() => setIsAddServiceModalOpen(false)}
+        onSubmit={handleAddServiceSubmit}
+        theme={theme}
+        isDark={isDark}
+      />
     </div>
   );
 }

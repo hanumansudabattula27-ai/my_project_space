@@ -528,14 +528,679 @@
 
 
 
+// // src/app/tools/env-matrix/[platform]/[aimId]/page.tsx
+// 'use client';
+
+// import { useEffect, useState } from 'react';
+// import { useParams, useRouter } from 'next/navigation';
+// import { useTheme } from 'next-themes';
+// import { Application } from '@/types';
+// import ApplicationDetailsView from '@/components/env-matrix/hydra-application-level/applicationdetailsview';
+// import { ArrowLeft, Edit, Trash2, Save, X, Search, RefreshCw } from 'lucide-react';
+
+// export default function ApplicationDetailsPage() {
+//   const params = useParams();
+//   const router = useRouter();
+//   const { theme: currentTheme, resolvedTheme } = useTheme();
+//   const [mounted, setMounted] = useState(false);
+//   const [application, setApplication] = useState<Application | null>(null);
+//   const [loading, setLoading] = useState(true);
+//   const [isEditing, setIsEditing] = useState(false);
+//   const [searchQuery, setSearchQuery] = useState('');
+
+//   const platform = params.platform as string;
+//   const aimId = params.aimId as string;
+
+//   useEffect(() => {
+//     setMounted(true);
+//   }, []);
+
+//   const isDark = mounted ? (resolvedTheme === 'dark' || currentTheme === 'dark') : false;
+
+//   const theme = isDark ? {
+//     background: "from-gray-900 via-gray-800 to-indigo-900",
+//     card: "bg-slate-800 border-slate-600",
+//     text: "text-white",
+//     textSecondary: "text-gray-300",
+//     input: "bg-slate-900 border-slate-600 text-white placeholder-gray-400",
+//     accent: "bg-teal-600 hover:bg-teal-700",
+//   } : {
+//     background: "from-cyan-50 via-teal-50 to-amber-50",
+//     card: "bg-white border-teal-200 shadow-sm",
+//     text: "text-gray-900",
+//     textSecondary: "text-gray-600",
+//     input: "bg-gray-50 border-teal-300 text-gray-900 placeholder-gray-500",
+//     accent: "bg-teal-600 hover:bg-teal-700",
+//   };
+
+//   const fetchApplication = async () => {
+//     try {
+//       setLoading(true);
+//       const response = await fetch(`/api/env-matrix/applications?platform=${platform}`);
+//       const result = await response.json();
+      
+//       if (result.success) {
+//         const app = result.data.find((a: Application) => a.aimId === aimId);
+//         if (app) {
+//           setApplication(app);
+//         }
+//       }
+//     } catch (error) {
+//       console.error('Failed to fetch application:', error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     if (mounted) {
+//       fetchApplication();
+//     }
+//   }, [platform, aimId, mounted]);
+
+//   const handleSave = async () => {
+//     try {
+//       await fetch('/api/env-matrix/applications', {
+//         method: 'PUT',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify(application),
+//       });
+//       setIsEditing(false);
+//     } catch (error) {
+//       console.error('Error saving application:', error);
+//     }
+//   };
+
+//   const handleDelete = async () => {
+//     if (confirm('Are you sure you want to delete this application?')) {
+//       try {
+//         await fetch(`/api/env-matrix/applications?aimId=${aimId}&platform=${platform}`, {
+//           method: 'DELETE',
+//         });
+//         router.push(`/tools/env-matrix/${platform}`);
+//       } catch (error) {
+//         console.error('Error deleting application:', error);
+//       }
+//     }
+//   };
+
+//   const handleApplicationUpdate = (updatedApp: Application) => {
+//     setApplication(updatedApp);
+//   };
+
+//   if (!mounted) {
+//     return (
+//       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-indigo-900 flex items-center justify-center">
+//         <div className="text-white text-xl">Loading...</div>
+//       </div>
+//     );
+//   }
+
+//   if (loading) {
+//     return (
+//       <div className={`min-h-screen bg-gradient-to-br ${theme.background} flex items-center justify-center`}>
+//         <div className="text-center">
+//           <div className="w-16 h-16 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+//           <p className={theme.textSecondary}>Loading application...</p>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   if (!application) {
+//     return (
+//       <div className={`min-h-screen bg-gradient-to-br ${theme.background} flex items-center justify-center`}>
+//         <div className="text-center">
+//           <h2 className={`text-2xl font-bold ${theme.text} mb-4`}>Application Not Found</h2>
+//           <button
+//             onClick={() => router.push(`/tools/env-matrix/${platform}`)}
+//             className={`px-6 py-3 ${theme.accent} text-white rounded-xl font-semibold`}
+//           >
+//             Back to Applications
+//           </button>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   const totalProjects = application.Projects?.length || 0;
+//   const totalServices = application.Projects?.reduce((total, proj) => 
+//     total + (proj.services?.length || 0), 0) || 0;
+//   const totalEnvironments = application.Projects?.reduce((total, proj) =>
+//     total + (proj.services?.reduce((sTotal, service) => 
+//       sTotal + (service.environments?.length || 0), 0) || 0), 0) || 0;
+
+//   return (
+//     <div className={`min-h-screen bg-gradient-to-br ${theme.background} ${theme.text} pt-25`}>
+//       <div className="max-w-7xl mx-auto px-6 py-6">
+        
+//         {/* COMPACT HEADER */}
+//         <div className="flex items-center justify-between mb-6">
+//           <div className="flex items-center gap-4">
+//             <button
+//               onClick={() => router.push(`/tools/env-matrix/${platform}`)}
+//               className={`text-sm ${isDark ? 'text-teal-400 hover:text-teal-300' : 'text-teal-600 hover:text-teal-700'} flex items-center gap-2 font-medium transition-colors`}
+//             >
+//               <ArrowLeft size={16} />
+//               Back
+//             </button>
+            
+//             <div className="h-6 w-px bg-gray-300 dark:bg-slate-600"></div>
+            
+//             <div className="flex items-center gap-3">
+//               <div className={`w-10 h-10 ${
+//                 platform === 'hydra'
+//                   ? isDark ? 'bg-gradient-to-br from-teal-600 to-cyan-700' : 'bg-gradient-to-br from-teal-500 to-cyan-600'
+//                   : isDark ? 'bg-gradient-to-br from-orange-600 to-red-700' : 'bg-gradient-to-br from-orange-500 to-red-600'
+//               } rounded-lg flex items-center justify-center text-xl`}>
+//                 {application.applicationName[0].toUpperCase()}
+//               </div>
+//               <div>
+//                 <h1 className={`text-2xl font-bold ${theme.text}`}>
+//                   {application.applicationName}
+//                 </h1>
+//                 <p className={`text-xs ${theme.textSecondary}`}>
+//                   ID: {application.aimId} • {totalProjects} projects • {totalServices} services
+//                 </p>
+//               </div>
+//             </div>
+//           </div>
+
+//           <div className="flex items-center gap-2">
+//             <button
+//               onClick={fetchApplication}
+//               className={`px-4 py-2 ${theme.card} border rounded-lg text-sm font-semibold hover:opacity-80 transition-all flex items-center gap-2`}
+//             >
+//               <RefreshCw size={16} />
+//               Refresh
+//             </button>
+//             {isEditing ? (
+//               <>
+//                 <button
+//                   onClick={() => setIsEditing(false)}
+//                   className={`px-4 py-2 ${theme.card} border rounded-lg text-sm font-semibold hover:opacity-80 transition-all flex items-center gap-2`}
+//                 >
+//                   <X size={16} />
+//                   Cancel
+//                 </button>
+//                 <button
+//                   onClick={handleSave}
+//                   className={`px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-semibold transition-all flex items-center gap-2`}
+//                 >
+//                   <Save size={16} />
+//                   Save
+//                 </button>
+//               </>
+//             ) : (
+//               <>
+//                 <button
+//                   onClick={() => setIsEditing(true)}
+//                   className={`px-4 py-2 ${theme.accent} text-white rounded-lg font-semibold flex items-center gap-2 text-sm hover:scale-105 transition-all`}
+//                 >
+//                   <Edit size={16} />
+//                   Edit
+//                 </button>
+//                 <button
+//                   onClick={handleDelete}
+//                   className={`px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold flex items-center gap-2 text-sm hover:scale-105 transition-all`}
+//                 >
+//                   <Trash2 size={16} />
+//                   Delete
+//                 </button>
+//               </>
+//             )}
+//           </div>
+//         </div>
+
+//         {/* COMPACT SEARCH */}
+//         <div className="mb-6">
+//           <div className="relative">
+//             <Search className={`absolute left-3 top-1/2 -translate-y-1/2 ${theme.textSecondary}`} size={18} />
+//             <input
+//               type="text"
+//               placeholder="Search projects, services, environments, zones..."
+//               value={searchQuery}
+//               onChange={(e) => setSearchQuery(e.target.value)}
+//               className={`w-full pl-10 pr-4 py-2.5 rounded-lg border ${theme.input} focus:outline-none focus:ring-2 ${isDark ? 'focus:ring-teal-500' : 'focus:ring-teal-600'} transition-all text-sm`}
+//             />
+//           </div>
+//         </div>
+
+//         {/* COMPACT STATS */}
+//         <div className="grid grid-cols-4 gap-4 mb-6">
+//           <div className={`${theme.card} border rounded-lg p-4`}>
+//             <p className={`text-xs font-semibold ${theme.textSecondary} mb-1`}>Projects</p>
+//             <p className={`text-2xl font-bold ${theme.text}`}>{totalProjects}</p>
+//           </div>
+//           <div className={`${theme.card} border rounded-lg p-4`}>
+//             <p className={`text-xs font-semibold ${theme.textSecondary} mb-1`}>Services</p>
+//             <p className={`text-2xl font-bold ${theme.text}`}>{totalServices}</p>
+//           </div>
+//           <div className={`${theme.card} border rounded-lg p-4`}>
+//             <p className={`text-xs font-semibold ${theme.textSecondary} mb-1`}>Environments</p>
+//             <p className={`text-2xl font-bold ${theme.text}`}>{totalEnvironments}</p>
+//           </div>
+//           <div className={`${theme.card} border rounded-lg p-4`}>
+//             <p className={`text-xs font-semibold ${theme.textSecondary} mb-1`}>Status</p>
+//             <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-bold ${
+//               isDark ? 'bg-green-900/30 text-green-300' : 'bg-green-100 text-green-700'
+//             }`}>
+//               Active
+//             </span>
+//           </div>
+//         </div>
+
+//         {/* APPLICATION CONTENT */}
+//         <ApplicationDetailsView
+//           application={application}
+//           onUpdate={handleApplicationUpdate}
+//           isEditing={isEditing}
+//           theme={theme}
+//           isDark={isDark}
+//           searchQuery={searchQuery}
+//         />
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+// 'use client';
+
+// import { useEffect, useState } from 'react';
+// import { useParams, useRouter } from 'next/navigation';
+// import { useTheme } from 'next-themes';
+// import { Application, Project } from '@/types';
+// import ApplicationDetailsView from '@/components/env-matrix/hydra-application-level/applicationdetailsview';
+// import { ArrowLeft, Edit, Trash2, Save, X, Search, RefreshCw, Plus } from 'lucide-react';
+
+// export default function ApplicationDetailsPage() {
+//   const params = useParams();
+//   const router = useRouter();
+//   const { theme: currentTheme, resolvedTheme } = useTheme();
+//   const [mounted, setMounted] = useState(false);
+//   const [application, setApplication] = useState<Application | null>(null);
+//   const [loading, setLoading] = useState(true);
+//   const [isEditing, setIsEditing] = useState(false);
+//   const [searchQuery, setSearchQuery] = useState('');
+//   const [isAddingProject, setIsAddingProject] = useState(false);
+//   const [newProjectName, setNewProjectName] = useState('');
+
+//   const platform = params.platform as string;
+//   const aimId = params.aimId as string;
+
+//   useEffect(() => {
+//     setMounted(true);
+//   }, []);
+
+//   const isDark = mounted ? (resolvedTheme === 'dark' || currentTheme === 'dark') : false;
+
+//   const theme = isDark ? {
+//     background: "from-gray-900 via-gray-800 to-indigo-900",
+//     card: "bg-slate-800 border-slate-600",
+//     text: "text-white",
+//     textSecondary: "text-gray-300",
+//     input: "bg-slate-900 border-slate-600 text-white placeholder-gray-400",
+//     accent: "bg-teal-600 hover:bg-teal-700",
+//   } : {
+//     background: "from-cyan-50 via-teal-50 to-amber-50",
+//     card: "bg-white border-teal-200 shadow-sm",
+//     text: "text-gray-900",
+//     textSecondary: "text-gray-600",
+//     input: "bg-gray-50 border-teal-300 text-gray-900 placeholder-gray-500",
+//     accent: "bg-teal-600 hover:bg-teal-700",
+//   };
+
+//   const fetchApplication = async () => {
+//     try {
+//       setLoading(true);
+//       const response = await fetch(`/api/env-matrix/applications?platform=${platform}`);
+//       const result = await response.json();
+      
+//       if (result.success) {
+//         const app = result.data.find((a: Application) => a.aimId === aimId);
+//         if (app) {
+//           setApplication(app);
+//         }
+//       }
+//     } catch (error) {
+//       console.error('Failed to fetch application:', error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     if (mounted) {
+//       fetchApplication();
+//     }
+//   }, [platform, aimId, mounted]);
+
+//   const handleSave = async () => {
+//     try {
+//       await fetch('/api/env-matrix/applications', {
+//         method: 'PUT',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify(application),
+//       });
+//       setIsEditing(false);
+//     } catch (error) {
+//       console.error('Error saving application:', error);
+//     }
+//   };
+
+//   const handleDelete = async () => {
+//     if (confirm('Are you sure you want to delete this application?')) {
+//       try {
+//         await fetch(`/api/env-matrix/applications?aimId=${aimId}&platform=${platform}`, {
+//           method: 'DELETE',
+//         });
+//         router.push(`/tools/env-matrix/${platform}`);
+//       } catch (error) {
+//         console.error('Error deleting application:', error);
+//       }
+//     }
+//   };
+
+//   const handleApplicationUpdate = (updatedApp: Application) => {
+//     setApplication(updatedApp);
+//   };
+
+//   const handleCancelEdit = () => {
+//     setIsEditing(false);
+//   };
+
+//   // Handle adding new project
+//   const handleAddProject = () => {
+//     // Basic validation
+//     if (!newProjectName.trim()) {
+//       alert('Project name cannot be empty');
+//       return;
+//     }
+
+//     // Create new project
+//     const newProject: Project = {
+//       project: newProjectName,
+//       services: [],
+//     };
+
+//     // Add to application
+//     const updatedProjects = [...(application?.Projects || []), newProject];
+//     const updatedApp = { ...application, Projects: updatedProjects } as Application;
+    
+//     // Update in state
+//     setApplication(updatedApp);
+
+//     // Reset add form
+//     setIsAddingProject(false);
+//     setNewProjectName('');
+//   };
+
+//   const handleCancelAddProject = () => {
+//     setIsAddingProject(false);
+//     setNewProjectName('');
+//   };
+
+//   // Auto-reset add mode when global isEditing turns off
+//   useEffect(() => {
+//     if (!isEditing && isAddingProject) {
+//       setIsAddingProject(false);
+//       setNewProjectName('');
+//     }
+//   }, [isEditing]);
+
+//   if (!mounted) {
+//     return (
+//       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-indigo-900 flex items-center justify-center">
+//         <div className="text-white text-xl">Loading...</div>
+//       </div>
+//     );
+//   }
+
+//   if (loading) {
+//     return (
+//       <div className={`min-h-screen bg-gradient-to-br ${theme.background} flex items-center justify-center`}>
+//         <div className="text-center">
+//           <div className="w-16 h-16 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+//           <p className={theme.textSecondary}>Loading application...</p>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   if (!application) {
+//     return (
+//       <div className={`min-h-screen bg-gradient-to-br ${theme.background} flex items-center justify-center`}>
+//         <div className="text-center">
+//           <h2 className={`text-2xl font-bold ${theme.text} mb-4`}>Application Not Found</h2>
+//           <button
+//             onClick={() => router.push(`/tools/env-matrix/${platform}`)}
+//             className={`px-6 py-3 ${theme.accent} text-white rounded-xl font-semibold`}
+//           >
+//             Back to Applications
+//           </button>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   const totalProjects = application.Projects?.length || 0;
+//   const totalServices = application.Projects?.reduce((total, proj) => 
+//     total + (proj.services?.length || 0), 0) || 0;
+//   const totalEnvironments = application.Projects?.reduce((total, proj) =>
+//     total + (proj.services?.reduce((sTotal, service) => 
+//       sTotal + (service.environments?.length || 0), 0) || 0), 0) || 0;
+
+//   return (
+//     <div className={`min-h-screen bg-gradient-to-br ${theme.background} ${theme.text} pt-25`}>
+//       <div className="max-w-7xl mx-auto px-6 py-6">
+        
+//         {/* HEADER */}
+//         <div className="flex items-center justify-between mb-6">
+//           <div className="flex items-center gap-4">
+//             <button
+//               onClick={() => router.push(`/tools/env-matrix/${platform}`)}
+//               className={`text-sm ${isDark ? 'text-teal-400 hover:text-teal-300' : 'text-teal-600 hover:text-teal-700'} flex items-center gap-2 font-medium transition-colors`}
+//             >
+//               <ArrowLeft size={16} />
+//               Back
+//             </button>
+            
+//             <div className="h-6 w-px bg-gray-300 dark:bg-slate-600"></div>
+            
+//             <div className="flex items-center gap-3">
+//               <div className={`w-10 h-10 ${
+//                 platform === 'hydra'
+//                   ? isDark ? 'bg-gradient-to-br from-teal-600 to-cyan-700' : 'bg-gradient-to-br from-teal-500 to-cyan-600'
+//                   : isDark ? 'bg-gradient-to-br from-orange-600 to-red-700' : 'bg-gradient-to-br from-orange-500 to-red-600'
+//               } rounded-lg flex items-center justify-center text-xl`}>
+//                 {application.applicationName[0].toUpperCase()}
+//               </div>
+//               <div>
+//                 <h1 className={`text-2xl font-bold ${theme.text}`}>
+//                   {application.applicationName}
+//                 </h1>
+//                 <p className={`text-xs ${theme.textSecondary}`}>
+//                   ID: {application.aimId} • {totalProjects} projects • {totalServices} services
+//                 </p>
+//               </div>
+//             </div>
+//           </div>
+
+//           <div className="flex items-center gap-2">
+//             <button
+//               onClick={fetchApplication}
+//               className={`px-4 py-2 ${theme.card} border rounded-lg text-sm font-semibold hover:opacity-80 transition-all flex items-center gap-2`}
+//             >
+//               <RefreshCw size={16} />
+//               Refresh
+//             </button>
+//             {isEditing ? (
+//               <>
+//                 <button
+//                   onClick={handleCancelEdit}
+//                   className={`px-4 py-2 ${theme.card} border rounded-lg text-sm font-semibold hover:opacity-80 transition-all flex items-center gap-2`}
+//                 >
+//                   <X size={16} />
+//                   Cancel
+//                 </button>
+//                 <button
+//                   onClick={handleSave}
+//                   className={`px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-semibold transition-all flex items-center gap-2`}
+//                 >
+//                   <Save size={16} />
+//                   Save
+//                 </button>
+//               </>
+//             ) : (
+//               <>
+//                 <button
+//                   onClick={() => setIsEditing(true)}
+//                   className={`px-4 py-2 ${theme.accent} text-white rounded-lg font-semibold flex items-center gap-2 text-sm hover:scale-105 transition-all`}
+//                 >
+//                   <Edit size={16} />
+//                   Edit
+//                 </button>
+//                 <button
+//                   onClick={handleDelete}
+//                   className={`px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold flex items-center gap-2 text-sm hover:scale-105 transition-all`}
+//                 >
+//                   <Trash2 size={16} />
+//                   Delete
+//                 </button>
+//               </>
+//             )}
+//           </div>
+//         </div>
+
+//         {/* SEARCH */}
+//         <div className="mb-6">
+//           <div className="relative">
+//             <Search className={`absolute left-3 top-1/2 -translate-y-1/2 ${theme.textSecondary}`} size={18} />
+//             <input
+//               type="text"
+//               placeholder="Search projects, services, environments, zones..."
+//               value={searchQuery}
+//               onChange={(e) => setSearchQuery(e.target.value)}
+//               className={`w-full pl-10 pr-4 py-2.5 rounded-lg border ${theme.input} focus:outline-none focus:ring-2 ${isDark ? 'focus:ring-teal-500' : 'focus:ring-teal-600'} transition-all text-sm`}
+//             />
+//           </div>
+//         </div>
+
+//         {/* STATS */}
+//         <div className="grid grid-cols-4 gap-4 mb-6">
+//           <div className={`${theme.card} border rounded-lg p-4`}>
+//             <p className={`text-xs font-semibold ${theme.textSecondary} mb-1`}>Projects</p>
+//             <p className={`text-2xl font-bold ${theme.text}`}>{totalProjects}</p>
+//           </div>
+//           <div className={`${theme.card} border rounded-lg p-4`}>
+//             <p className={`text-xs font-semibold ${theme.textSecondary} mb-1`}>Services</p>
+//             <p className={`text-2xl font-bold ${theme.text}`}>{totalServices}</p>
+//           </div>
+//           <div className={`${theme.card} border rounded-lg p-4`}>
+//             <p className={`text-xs font-semibold ${theme.textSecondary} mb-1`}>Environments</p>
+//             <p className={`text-2xl font-bold ${theme.text}`}>{totalEnvironments}</p>
+//           </div>
+//           <div className={`${theme.card} border rounded-lg p-4`}>
+//             <p className={`text-xs font-semibold ${theme.textSecondary} mb-1`}>Status</p>
+//             <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-bold ${
+//               isDark ? 'bg-green-900/30 text-green-300' : 'bg-green-100 text-green-700'
+//             }`}>
+//               Active
+//             </span>
+//           </div>
+//         </div>
+
+//         {/* MAIN CONTENT */}
+//         <div className="space-y-4">
+//           <ApplicationDetailsView
+//             application={application}
+//             onUpdate={handleApplicationUpdate}
+//             isEditing={isEditing}
+//             theme={theme}
+//             isDark={isDark}
+//             searchQuery={searchQuery}
+//           />
+
+//           {/* Add New Project Button - Only in Edit Mode */}
+//           {isEditing && !isAddingProject && (
+//             <button
+//               onClick={() => setIsAddingProject(true)}
+//               className={`w-full py-4 rounded-lg border-2 border-dashed flex items-center justify-center gap-2 transition-all font-semibold ${
+//                 isDark 
+//                   ? 'border-teal-500/50 hover:border-teal-500 hover:bg-teal-900/20 text-teal-300' 
+//                   : 'border-teal-400/50 hover:border-teal-500 hover:bg-teal-50 text-teal-600'
+//               }`}
+//             >
+//               <Plus size={20} />
+//               Add New Project
+//             </button>
+//           )}
+
+//           {/* Add Project Form - Only shows when adding */}
+//           {isAddingProject && (
+//             <div className={`p-6 rounded-lg border-2 ${
+//               isDark ? 'bg-slate-900/50 border-teal-500/30' : 'bg-teal-50 border-teal-300'
+//             }`}>
+//               <h3 className={`text-lg font-bold ${theme.text} mb-4`}>New Project</h3>
+//               <div className="space-y-4">
+//                 <div>
+//                   <label className={`text-sm font-semibold ${theme.text} block mb-2`}>
+//                     Project Name
+//                   </label>
+//                   <input
+//                     type="text"
+//                     value={newProjectName}
+//                     onChange={(e) => setNewProjectName(e.target.value)}
+//                     placeholder="e.g., Payment Service"
+//                     className={`w-full px-4 py-2.5 ${theme.input} rounded-lg border focus:outline-none focus:ring-2 ${isDark ? 'focus:ring-teal-500' : 'focus:ring-teal-600'}`}
+//                   />
+//                 </div>
+//                 <div className="flex gap-2 justify-end">
+//                   <button
+//                     onClick={handleCancelAddProject}
+//                     className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 font-semibold flex items-center gap-2 transition-all"
+//                   >
+//                     <X size={16} />
+//                     Cancel
+//                   </button>
+//                   <button
+//                     onClick={handleAddProject}
+//                     className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold flex items-center gap-2 transition-all"
+//                   >
+//                     <Save size={16} />
+//                     Add Project
+//                   </button>
+//                 </div>
+//               </div>
+//             </div>
+//           )}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+
 // src/app/tools/env-matrix/[platform]/[aimId]/page.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
-import { Application } from '@/types';
+import { Application, Project } from '@/types';
 import ApplicationDetailsView from '@/components/env-matrix/hydra-application-level/applicationdetailsview';
+import AddItemModal from '@/components/env-matrix/hydra-application-level/additemmodal';
 import { ArrowLeft, Edit, Trash2, Save, X, Search, RefreshCw } from 'lucide-react';
 
 export default function ApplicationDetailsPage() {
@@ -547,6 +1212,7 @@ export default function ApplicationDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isAddProjectModalOpen, setIsAddProjectModalOpen] = useState(false);
 
   const platform = params.platform as string;
   const aimId = params.aimId as string;
@@ -626,6 +1292,13 @@ export default function ApplicationDetailsPage() {
 
   const handleApplicationUpdate = (updatedApp: Application) => {
     setApplication(updatedApp);
+  };
+
+  const handleAddProjectSubmit = (newProjectData: Project) => {
+    if (!application) return;
+    const updatedProjects = [...application.Projects, newProjectData];
+    setApplication({ ...application, Projects: updatedProjects });
+    setIsAddProjectModalOpen(false);
   };
 
   if (!mounted) {
@@ -724,6 +1397,12 @@ export default function ApplicationDetailsPage() {
                   Cancel
                 </button>
                 <button
+                  onClick={() => setIsAddProjectModalOpen(true)}
+                  className={`px-4 py-2 ${theme.accent} text-white rounded-lg font-semibold flex items-center gap-2 text-sm hover:scale-105 transition-all`}
+                >
+                  + Add Project
+                </button>
+                <button
                   onClick={handleSave}
                   className={`px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-semibold transition-all flex items-center gap-2`}
                 >
@@ -798,6 +1477,16 @@ export default function ApplicationDetailsPage() {
           theme={theme}
           isDark={isDark}
           searchQuery={searchQuery}
+        />
+
+        {/* Add Project Modal */}
+        <AddItemModal
+          isOpen={isAddProjectModalOpen}
+          itemType="project"
+          onClose={() => setIsAddProjectModalOpen(false)}
+          onSubmit={handleAddProjectSubmit}
+          theme={theme}
+          isDark={isDark}
         />
       </div>
     </div>
