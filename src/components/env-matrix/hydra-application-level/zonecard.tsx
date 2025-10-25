@@ -1311,3 +1311,82 @@ export default function ZoneCard({
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            // {/* Custom Fields Section */}
+            // <div className={`pt-2 mt-2 border-t ${isDark ? 'border-slate-700' : 'border-gray-200'}`}>
+            //   <button
+            //     onClick={() => setShowMetadata(!showMetadata)}
+            //     className={`w-full px-3 py-2 rounded-lg text-xs font-semibold transition-all flex items-center justify-between ${
+            //       showMetadata
+            //         ? `${theme.accent} text-white`
+            //         : `${isDark ? 'bg-slate-700 text-white' : 'bg-gray-100 text-gray-700'}`
+            //     }`}
+            //   >
+            //     <span>Custom Fields</span>
+            //     <span className={`px-2 py-0.5 rounded-full ${
+            //       showMetadata ? 'bg-white/20' : isDark ? 'bg-slate-600' : 'bg-gray-200'
+            //     }`}>
+            //       {Object.keys(zone.metadata || {}).length}
+            //     </span>
+            //   </button>
+
+            //   {showMetadata && (
+            //     <div className="mt-2">
+            //       {isEditing ? (
+            //         <CustomFieldEditor
+            //           level="zone"
+            //           metadata={zone.metadata || {}}
+            //           onChange={handleMetadataUpdate}
+            //           theme={theme}
+            //           isDark={isDark}
+            //         />
+            //       ) : (
+            //         <div className="space-y-1">
+            //           {Object.entries(zone.metadata || {}).length === 0 ? (
+            //             <p className={`text-center py-3 text-xs ${theme.textSecondary}`}>
+            //               No custom fields
+            //             </p>
+            //           ) : (
+            //             Object.entries(zone.metadata || {}).map(([key, value]) => (
+            //               <div
+            //                 key={key}
+            //                 className={`flex items-center justify-between p-2 ${
+            //                   isDark ? 'bg-slate-700/50' : 'bg-gray-50'
+            //                 } rounded`}
+            //               >
+            //                 <span className={`font-semibold ${theme.text} text-xs`}>{key}</span>
+            //                 <span className={`${theme.textSecondary} text-xs`}>{value as string}</span>
+            //               </div>
+            //             ))
+            //           )}
+            //         </div>
+            //       )}
+            //     </div>
+            //      )}
+            

@@ -1604,13 +1604,368 @@
 
 
 
+// // src/components/env-matrix/hydra-application-level/environmentsection.tsx
+// 'use client';
+
+// import { useState, useEffect } from 'react';
+// import { Application, Environment, Zone } from '@/types';
+// import ZoneCard from './zonecard';
+// import AddItemModal from '@/components/env-matrix/hydra-application-level/additemmodal';
+// import { ChevronDown, ChevronRight, Cloud, Edit2, Save, X } from 'lucide-react';
+
+// interface EnvironmentSectionProps {
+//   environment: Environment;
+//   envIndex: number;
+//   serviceIndex: number;
+//   projectIndex: number;
+//   application: Application;
+//   onUpdate: (app: Application) => void;
+//   isEditing: boolean;
+//   theme: any;
+//   isDark: boolean;
+//   searchQuery: string;
+//   isExpanded: boolean;
+//   onEnvOpen: (index: number) => void;
+// }
+
+// export default function EnvironmentSection({
+//   environment,
+//   envIndex,
+//   serviceIndex,
+//   projectIndex,
+//   application,
+//   onUpdate,
+//   isEditing,
+//   theme,
+//   isDark,
+//   searchQuery,
+//   isExpanded,
+//   onEnvOpen,
+// }: EnvironmentSectionProps) {
+//   const [isEditingEnv, setIsEditingEnv] = useState(false);
+//   const [editedEnv, setEditedEnv] = useState(environment);
+//   const [isAddZoneModalOpen, setIsAddZoneModalOpen] = useState(false);
+
+//   // Reset local edit state when global isEditing becomes false
+//   useEffect(() => {
+//     if (!isEditing) {
+//       setIsEditingEnv(false);
+//       setEditedEnv(environment);
+//     }
+//   }, [isEditing, environment]);
+
+//   const updateEnvironment = (updatedEnv: Environment) => {
+//     const updatedProjects = [...application.Projects];
+//     const updatedServices = [...updatedProjects[projectIndex].services];
+//     const updatedEnvironments = [...updatedServices[serviceIndex].environments];
+//     updatedEnvironments[envIndex] = updatedEnv;
+//     updatedServices[serviceIndex] = {
+//       ...updatedServices[serviceIndex],
+//       environments: updatedEnvironments,
+//     };
+//     updatedProjects[projectIndex] = {
+//       ...updatedProjects[projectIndex],
+//       services: updatedServices,
+//     };
+//     onUpdate({ ...application, Projects: updatedProjects });
+//   };
+
+//   const handleSave = () => {
+//     updateEnvironment(editedEnv);
+//     setIsEditingEnv(false);
+//   };
+
+//   const handleCancel = () => {
+//     setEditedEnv(environment);
+//     setIsEditingEnv(false);
+//   };
+
+//   const handleToggle = () => {
+//     onEnvOpen(envIndex);
+//   };
+
+//   const handleAddZoneSubmit = (newZoneData: Zone) => {
+//     const updatedZones = [...(environment.Zones || []), newZoneData];
+//     const updatedEnvWithZone = { ...environment, Zones: updatedZones };
+//     updateEnvironment(updatedEnvWithZone);
+//     // Auto-expand to show new zone
+//     onEnvOpen(envIndex);
+//     setIsAddZoneModalOpen(false);
+//   };
+
+//   // Filter zones
+//   const filteredZones = environment.Zones?.filter(zone => {
+//     if (!searchQuery) return true;
+//     const searchLower = searchQuery.toLowerCase();
+//     const zoneText = JSON.stringify(zone).toLowerCase();
+//     return zoneText.includes(searchLower);
+//   }) || [];
+
+//   const hasMatchingZone = searchQuery && filteredZones.length > 0;
+//   const shouldAutoExpand = hasMatchingZone && !isExpanded;
+
+//   const getEnvColor = (envName: string) => {
+//     if (envName.includes('E1')) return isDark ? 'bg-green-900/30 text-green-300' : 'bg-green-100 text-green-700';
+//     if (envName.includes('E2')) return isDark ? 'bg-yellow-900/30 text-yellow-300' : 'bg-yellow-100 text-yellow-700';
+//     if (envName.includes('E3')) return isDark ? 'bg-red-900/30 text-red-300' : 'bg-red-100 text-red-700';
+//     return isDark ? 'bg-blue-900/30 text-blue-300' : 'bg-blue-100 text-blue-700';
+//   };
+
+//   const isHighlighted = searchQuery && 
+//     environment.environmentName.toLowerCase().includes(searchQuery.toLowerCase());
+
+//   return (
+//     <div className={`border rounded-lg overflow-hidden ${
+//       isHighlighted
+//         ? isDark ? 'border-yellow-500' : 'border-yellow-400'
+//         : isDark ? 'border-slate-600' : 'border-gray-200'
+//     }`}>
+//       {/* Environment Header */}
+//       <div className={`w-full flex items-center justify-between p-3 ${
+//         isDark ? 'bg-slate-800/50 hover:bg-slate-800' : 'bg-gray-50 hover:bg-gray-100'
+//       }`}>
+//         {/* Left Side - Clickable Toggle Area */}
+//         <button
+//           onClick={handleToggle}
+//           className="flex items-center gap-3 hover:opacity-80 transition-all flex-1"
+//         >
+//           {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+//           <Cloud size={18} className={isDark ? 'text-blue-400' : 'text-blue-600'} />
+//           <div className="text-left">
+//             {isEditingEnv ? (
+//               <input
+//                 type="text"
+//                 value={editedEnv.environmentName}
+//                 onChange={(e) => setEditedEnv({ ...editedEnv, environmentName: e.target.value })}
+//                 onClick={(e) => e.stopPropagation()}
+//                 className={`text-base font-bold px-2 py-1 ${theme.input} rounded border`}
+//               />
+//             ) : (
+//               <>
+//                 <h5 className={`text-base font-bold ${theme.text} ${isHighlighted ? 'text-yellow-500' : ''}`}>
+//                   {environment.environmentName}
+//                 </h5>
+//                 {environment.GTM && (
+//                   <p className={`text-sm ${theme.textSecondary} truncate max-w-[300px] mt-1`}>
+//                     {environment.GTM}
+//                   </p>
+//                 )}
+//               </>
+//             )}
+//           </div>
+//         </button>
+
+//         {/* Right Side - Action Buttons */}
+//         <div className="flex items-center gap-2">
+//           {isEditing && !isEditingEnv && (
+//             <div
+//               onClick={(e) => {
+//                 e.stopPropagation();
+//                 setIsEditingEnv(true);
+//               }}
+//               className={`p-2 rounded hover:bg-opacity-80 cursor-pointer ${isDark ? 'hover:bg-slate-600' : 'hover:bg-gray-200'}`}
+//             >
+//               <Edit2 size={14} className={theme.textSecondary} />
+//             </div>
+//           )}
+//           {isEditingEnv && (
+//             <>
+//               <div
+//                 onClick={(e) => {
+//                   e.stopPropagation();
+//                   handleSave();
+//                 }}
+//                 className="p-2 bg-green-600 text-white rounded hover:bg-green-700 cursor-pointer"
+//               >
+//                 <Save size={14} />
+//               </div>
+//               <div
+//                 onClick={(e) => {
+//                   e.stopPropagation();
+//                   handleCancel();
+//                 }}
+//                 className="p-2 bg-gray-600 text-white rounded hover:bg-gray-700 cursor-pointer"
+//               >
+//                 <X size={14} />
+//               </div>
+//             </>
+//           )}
+//           {isEditing && !isEditingEnv && (
+//             <button
+//               onClick={(e) => {
+//                 e.stopPropagation();
+//                 setIsAddZoneModalOpen(true);
+//               }}
+//               className={`px-3 py-2 rounded text-sm font-semibold ${theme.accent} text-white hover:scale-105 transition-all`}
+//             >
+//               + Zone
+//             </button>
+//           )}
+//           <span className={`px-3 py-1 rounded text-sm font-bold ${getEnvColor(environment.environmentName)}`}>
+//             {filteredZones.length}
+//           </span>
+//         </div>
+//       </div>
+
+//       {/* Environment Content */}
+//       {(isExpanded || shouldAutoExpand) && (
+//         <div className="p-3 pt-0">
+//           {/* Environment Details - EDITABLE VERSION */}
+//           {isEditingEnv ? (
+//             <div className={`mb-3 p-3 rounded ${isDark ? 'bg-slate-900/50' : 'bg-white'}`}>
+//               <div className="grid grid-cols-1 gap-3">
+//                 {/* GTM */}
+//                 <div>
+//                   <label className={`text-sm font-semibold ${theme.text} block mb-1`}>
+//                     GTM
+//                   </label>
+//                   <input
+//                     type="text"
+//                     value={editedEnv.GTM || ''}
+//                     onChange={(e) => setEditedEnv({ ...editedEnv, GTM: e.target.value })}
+//                     placeholder="e.g., payment.app.dev.com"
+//                     className={`w-full px-3 py-2 text-base ${theme.input} rounded border`}
+//                   />
+//                 </div>
+
+//                 {/* Name Hydra */}
+//                 <div>
+//                   <label className={`text-sm font-semibold ${theme.text} block mb-1`}>
+//                     Name Hydra
+//                   </label>
+//                   <input
+//                     type="text"
+//                     value={editedEnv.namehydra || ''}
+//                     onChange={(e) => setEditedEnv({ ...editedEnv, namehydra: e.target.value })}
+//                     placeholder="e.g., allowpaymenthydra.com"
+//                     className={`w-full px-3 py-2 text-base ${theme.input} rounded border`}
+//                   />
+//                 </div>
+
+//                 {/* ABC GTM */}
+//                 <div>
+//                   <label className={`text-sm font-semibold ${theme.text} block mb-1`}>
+//                     ABC GTM
+//                   </label>
+//                   <input
+//                     type="text"
+//                     value={editedEnv.abcGTM || ''}
+//                     onChange={(e) => setEditedEnv({ ...editedEnv, abcGTM: e.target.value })}
+//                     placeholder="e.g., abc-gtm-value"
+//                     className={`w-full px-3 py-2 text-base ${theme.input} rounded border`}
+//                   />
+//                 </div>
+
+//                 {/* Firewall Profile */}
+//                 <div>
+//                   <label className={`text-sm font-semibold ${theme.text} block mb-1`}>
+//                     Firewall Profile
+//                   </label>
+//                   <input
+//                     type="text"
+//                     value={editedEnv.firewallProfile || ''}
+//                     onChange={(e) => setEditedEnv({ ...editedEnv, firewallProfile: e.target.value })}
+//                     placeholder="e.g., production"
+//                     className={`w-full px-3 py-2 text-base ${theme.input} rounded border`}
+//                   />
+//                 </div>
+//               </div>
+//             </div>
+//           ) : (
+//             <div className={`mb-3 p-3 rounded text-base ${isDark ? 'bg-slate-900/50' : 'bg-white'}`}>
+//               <div className="grid grid-cols-2 gap-3">
+//                 {environment.GTM && (
+//                   <div className="flex gap-2">
+//                     <span className={`font-semibold ${theme.text}`}>GTM:</span>
+//                     <span className={theme.textSecondary}>{environment.GTM}</span>
+//                   </div>
+//                 )}
+//                 {environment.namehydra && (
+//                   <div className="flex gap-2">
+//                     <span className={`font-semibold ${theme.text}`}>Hydra:</span>
+//                     <span className={theme.textSecondary}>{environment.namehydra}</span>
+//                   </div>
+//                 )}
+//                 {environment.abcGTM && (
+//                   <div className="flex gap-2">
+//                     <span className={`font-semibold ${theme.text}`}>ABC GTM:</span>
+//                     <span className={theme.textSecondary}>{environment.abcGTM}</span>
+//                   </div>
+//                 )}
+//                 {environment.firewallProfile && (
+//                   <div className="flex gap-2">
+//                     <span className={`font-semibold ${theme.text}`}>Firewall:</span>
+//                     <span className={theme.textSecondary}>{environment.firewallProfile}</span>
+//                   </div>
+//                 )}
+//               </div>
+//             </div>
+//           )}
+
+//           {/* Zones Grid */}
+//           {filteredZones.length > 0 ? (
+//             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+//               {filteredZones.map((zone, index) => {
+//                 const originalIndex = environment.Zones.findIndex(z => z.ZoneName === zone.ZoneName);
+//                 return (
+//                   <ZoneCard
+//                     key={originalIndex}
+//                     zone={zone}
+//                     zoneIndex={originalIndex}
+//                     envIndex={envIndex}
+//                     serviceIndex={serviceIndex}
+//                     projectIndex={projectIndex}
+//                     application={application}
+//                     onUpdate={onUpdate}
+//                     isEditing={isEditing}
+//                     theme={theme}
+//                     isDark={isDark}
+//                     searchQuery={searchQuery}
+//                   />
+//                 );
+//               })}
+//             </div>
+//           ) : (
+//             <p className={`text-center py-4 text-sm ${theme.textSecondary}`}>
+//               No zones match the search
+//             </p>
+//           )}
+//         </div>
+//       )}
+
+//       {/* Add Zone Modal */}
+//       <AddItemModal
+//         isOpen={isAddZoneModalOpen}
+//         itemType="zone"
+//         onClose={() => setIsAddZoneModalOpen(false)}
+//         onSubmit={handleAddZoneSubmit}
+//         theme={theme}
+//         isDark={isDark}
+//       />
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // src/components/env-matrix/hydra-application-level/environmentsection.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
 import { Application, Environment, Zone } from '@/types';
 import ZoneCard from './zonecard';
-import AddItemModal from '@/components/env-matrix/hydra-application-level/additemmodal';
+import AddItemModal from './additemmodal';
 import { ChevronDown, ChevronRight, Cloud, Edit2, Save, X } from 'lucide-react';
 
 interface EnvironmentSectionProps {
@@ -1790,7 +2145,8 @@ export default function EnvironmentSection({
               </div>
             </>
           )}
-          {isEditing && !isEditingEnv && (
+          {/* ✅ FIXED: Show Add Zone button ONLY when isEditingEnv = true */}
+          {isEditingEnv && (
             <button
               onClick={(e) => {
                 e.stopPropagation();

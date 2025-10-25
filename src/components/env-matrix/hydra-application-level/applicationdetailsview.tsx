@@ -936,6 +936,132 @@
 
 
 
+// // src/components/env-matrix/hydra-application-level/applicationdetailsview.tsx
+// 'use client';
+
+// import { useState } from 'react';
+// import { Application } from '@/types';
+// import ProjectSection from './projectsection';
+// import SimpleFilter from '@/components/env-matrix/hydra-application-level/simplefilter';
+
+// interface ApplicationDetailsViewProps {
+//   application: Application;
+//   onUpdate: (app: Application) => void;
+//   isEditing: boolean;
+//   theme: any;
+//   isDark: boolean;
+//   searchQuery: string;
+// }
+
+// export default function ApplicationDetailsView({
+//   application,
+//   onUpdate,
+//   isEditing,
+//   theme,
+//   isDark,
+//   searchQuery,
+// }: ApplicationDetailsViewProps) {
+//   const [expandedProjectIndex, setExpandedProjectIndex] = useState<number | null>(null);
+//   const [selectedProject, setSelectedProject] = useState('');
+//   const [selectedService, setSelectedService] = useState('');
+
+//   const handleProjectOpen = (index: number) => {
+//     setExpandedProjectIndex(expandedProjectIndex === index ? null : index);
+//   };
+
+//   // Filter projects based on ONLY search (separate from filter)
+//   let filteredProjects = application.Projects || [];
+
+//   // Apply FILTER (Project/Service dropdowns)
+//   if (selectedProject) {
+//     filteredProjects = filteredProjects.filter(p => p.project === selectedProject);
+//   }
+
+//   if (selectedService) {
+//     filteredProjects = filteredProjects.filter(project =>
+//       project.services?.some(service => service.serviceName === selectedService)
+//     );
+//   }
+
+//   // Apply SEARCH (separate - searches everything)
+//   if (searchQuery) {
+//     filteredProjects = filteredProjects.filter((project) => {
+//       const searchLower = searchQuery.toLowerCase();
+//       const projectText = JSON.stringify(project).toLowerCase();
+//       return projectText.includes(searchLower);
+//     });
+//   }
+
+//   const hasActiveFilters = selectedProject !== '' || selectedService !== '';
+
+//   return (
+//     <div>
+//       {/* Simple Filter Bar (Projects & Services Only) */}
+//       <SimpleFilter
+//         application={application}
+//         selectedProject={selectedProject}
+//         selectedService={selectedService}
+//         onProjectChange={setSelectedProject}
+//         onServiceChange={setSelectedService}
+//         theme={theme}
+//         isDark={isDark}
+//       />
+
+//       {/* Filter Status Message */}
+//       {hasActiveFilters && (
+//         <div className={`mb-4 ${isDark ? 'bg-blue-900/30 border-blue-700' : 'bg-blue-50 border-blue-200'} border rounded-lg p-3`}>
+//           <p className={`text-sm font-semibold ${isDark ? 'text-blue-300' : 'text-blue-700'}`}>
+//             🔍 Filtered: Showing {filteredProjects.length} of {application.Projects?.length || 0} projects
+//             {selectedProject && ` | Project: ${selectedProject}`}
+//             {selectedService && ` | Service: ${selectedService}`}
+//           </p>
+//         </div>
+//       )}
+
+//       {/* Projects List */}
+//       <div className="space-y-4">
+//         {filteredProjects.length > 0 ? (
+//           filteredProjects.map((project, index) => {
+//             const originalIndex = application.Projects.findIndex(p => p.project === project.project);
+//             return (
+//               <ProjectSection
+//                 key={originalIndex}
+//                 project={project}
+//                 projectIndex={originalIndex}
+//                 application={application}
+//                 onUpdate={onUpdate}
+//                 isEditing={isEditing}
+//                 theme={theme}
+//                 isDark={isDark}
+//                 searchQuery={searchQuery}
+//                 selectedService={selectedService}
+//                 isExpanded={expandedProjectIndex === originalIndex}
+//                 onToggle={() => {}}
+//                 onProjectOpen={handleProjectOpen}
+//               />
+//             );
+//           })
+//         ) : (
+//           <div className={`${theme.card} border rounded-lg p-12 text-center`}>
+//             <p className={theme.textSecondary}>
+//               {searchQuery || hasActiveFilters
+//                 ? 'No results found'
+//                 : 'No projects found'}
+//             </p>
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
 // src/components/env-matrix/hydra-application-level/applicationdetailsview.tsx
 'use client';
 

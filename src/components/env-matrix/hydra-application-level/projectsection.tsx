@@ -896,12 +896,254 @@
 
 
 // src/components/env-matrix/hydra-application-level/projectsection.tsx
+// 'use client';
+
+// import { useState, useEffect } from 'react';
+// import { Application, Project, Service } from '@/types';
+// import ServiceSection from './servicesection';
+// import AddItemModal from '@/components/env-matrix/hydra-application-level/additemmodal';
+// import { ChevronDown, ChevronRight, FolderOpen, Edit2, Save, X } from 'lucide-react';
+
+// interface ProjectSectionProps {
+//   project: Project;
+//   projectIndex: number;
+//   application: Application;
+//   onUpdate: (app: Application) => void;
+//   isEditing: boolean;
+//   theme: any;
+//   isDark: boolean;
+//   searchQuery: string;
+//   selectedService: string;
+//   isExpanded: boolean;
+//   onToggle: () => void;
+//   onProjectOpen: (index: number) => void;
+// }
+
+// export default function ProjectSection({
+//   project,
+//   projectIndex,
+//   application,
+//   onUpdate,
+//   isEditing,
+//   theme,
+//   isDark,
+//   searchQuery,
+//   selectedService,
+//   isExpanded,
+//   onToggle,
+//   onProjectOpen,
+// }: ProjectSectionProps) {
+//   const [isEditingProject, setIsEditingProject] = useState(false);
+//   const [editedProject, setEditedProject] = useState(project);
+//   const [expandedServiceIndex, setExpandedServiceIndex] = useState<number | null>(null);
+//   const [isAddServiceModalOpen, setIsAddServiceModalOpen] = useState(false);
+
+//   // Reset local edit state when global isEditing becomes false
+//   useEffect(() => {
+//     if (!isEditing) {
+//       setIsEditingProject(false);
+//       setEditedProject(project);
+//     }
+//   }, [isEditing, project]);
+
+//   const updateProject = (updatedProject: Project) => {
+//     const updatedProjects = [...application.Projects];
+//     updatedProjects[projectIndex] = updatedProject;
+//     onUpdate({ ...application, Projects: updatedProjects });
+//   };
+
+//   const handleSave = () => {
+//     updateProject(editedProject);
+//     setIsEditingProject(false);
+//   };
+
+//   const handleCancel = () => {
+//     setEditedProject(project);
+//     setIsEditingProject(false);
+//   };
+
+//   const handleToggle = () => {
+//     onProjectOpen(projectIndex);
+//     onToggle();
+//   };
+
+//   const handleServiceOpen = (serviceIndex: number) => {
+//     setExpandedServiceIndex(expandedServiceIndex === serviceIndex ? null : serviceIndex);
+//   };
+
+//   const handleAddServiceSubmit = (newServiceData: Service) => {
+//     const updatedServices = [...(project.services || []), newServiceData];
+//     const updatedProjectWithService = { ...project, services: updatedServices };
+//     updateProject(updatedProjectWithService);
+//     // Auto-expand to show new service
+//     onProjectOpen(projectIndex);
+//     setIsAddServiceModalOpen(false);
+//   };
+
+//   // Filter services
+//   const filteredServices = project.services?.filter(service => {
+//     // If service filter is active, show only that service
+//     if (selectedService && service.serviceName !== selectedService) {
+//       return false;
+//     }
+    
+//     // Search filter (separate from filter)
+//     if (searchQuery) {
+//       const searchLower = searchQuery.toLowerCase();
+//       const serviceText = JSON.stringify(service).toLowerCase();
+//       return serviceText.includes(searchLower);
+//     }
+    
+//     return true;
+//   }) || [];
+
+//   // Auto-expand if service is filtered or search matches
+//   const hasMatchingService = (selectedService || searchQuery) && filteredServices.length > 0;
+//   const shouldAutoExpand = hasMatchingService && !isExpanded;
+
+//   return (
+//     <div className={`${theme.card} border rounded-lg overflow-hidden`}>
+//       {/* Project Header - No nested buttons */}
+//       <div className={`w-full flex items-center justify-between p-4 ${
+//         isDark ? 'hover:bg-slate-700/50' : 'hover:bg-gray-50'
+//       }`}>
+//         {/* Left Side - Clickable Toggle Area */}
+//         <button
+//           onClick={handleToggle}
+//           className="flex items-center gap-3 hover:opacity-80 transition-all flex-1"
+//         >
+//           {isExpanded || shouldAutoExpand ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
+//           <FolderOpen size={22} className={isDark ? 'text-teal-400' : 'text-teal-600'} />
+//           <div className="text-left">
+//             {isEditingProject ? (
+//               <input
+//                 type="text"
+//                 value={editedProject.project}
+//                 onChange={(e) => setEditedProject({ ...editedProject, project: e.target.value })}
+//                 onClick={(e) => e.stopPropagation()}
+//                 className={`text-lg font-bold px-2 py-1 ${theme.input} rounded border`}
+//               />
+//             ) : (
+//               <h3 className={`text-lg font-bold ${theme.text}`}>{project.project}</h3>
+//             )}
+//             <p className={`text-sm ${theme.textSecondary} mt-1`}>
+//               {filteredServices.length} service{filteredServices.length !== 1 ? 's' : ''}
+//               {selectedService && filteredServices.length !== project.services?.length && 
+//                 ` (filtered from ${project.services?.length || 0})`
+//               }
+//             </p>
+//           </div>
+//         </button>
+
+//         {/* Right Side - Action Buttons */}
+//         <div className="flex items-center gap-2">
+//           {isEditing && !isEditingProject && (
+//             <div
+//               onClick={(e) => {
+//                 e.stopPropagation();
+//                 setIsEditingProject(true);
+//               }}
+//               className={`p-2 rounded hover:bg-opacity-80 cursor-pointer ${isDark ? 'hover:bg-slate-600' : 'hover:bg-gray-200'}`}
+//             >
+//               <Edit2 size={16} className={theme.textSecondary} />
+//             </div>
+//           )}
+//           {isEditingProject && (
+//             <>
+//               <div
+//                 onClick={(e) => {
+//                   e.stopPropagation();
+//                   handleSave();
+//                 }}
+//                 className="p-2 bg-green-600 text-white rounded hover:bg-green-700 cursor-pointer"
+//               >
+//                 <Save size={16} />
+//               </div>
+//               <div
+//                 onClick={(e) => {
+//                   e.stopPropagation();
+//                   handleCancel();
+//                 }}
+//                 className="p-2 bg-gray-600 text-white rounded hover:bg-gray-700 cursor-pointer"
+//               >
+//                 <X size={16} />
+//               </div>
+//             </>
+//           )}
+//           {isEditing && !isEditingProject && (
+//             <button
+//               onClick={(e) => {
+//                 e.stopPropagation();
+//                 setIsAddServiceModalOpen(true);
+//               }}
+//               className={`px-3 py-2 rounded text-sm font-semibold ${theme.accent} text-white hover:scale-105 transition-all`}
+//             >
+//               + Service
+//             </button>
+//           )}
+//           <span className={`px-3 py-1 rounded text-sm font-bold ${
+//             isDark ? 'bg-teal-900/30 text-teal-300' : 'bg-teal-100 text-teal-700'
+//           }`}>
+//             {project.services?.length || 0}
+//           </span>
+//         </div>
+//       </div>
+
+//       {/* Project Content */}
+//       {(isExpanded || shouldAutoExpand) && (
+//         <div className="p-4 pt-0 space-y-3">
+//           {filteredServices.length > 0 ? (
+//             filteredServices.map((service, index) => {
+//               const originalIndex = project.services.findIndex(s => s.serviceName === service.serviceName);
+//               return (
+//                 <ServiceSection
+//                   key={originalIndex}
+//                   service={service}
+//                   serviceIndex={originalIndex}
+//                   projectIndex={projectIndex}
+//                   application={application}
+//                   onUpdate={onUpdate}
+//                   isEditing={isEditing}
+//                   theme={theme}
+//                   isDark={isDark}
+//                   searchQuery={searchQuery}
+//                   isExpanded={expandedServiceIndex === originalIndex}
+//                   onServiceOpen={handleServiceOpen}
+//                 />
+//               );
+//             })
+//           ) : (
+//             <p className={`text-center py-6 text-sm ${theme.textSecondary}`}>
+//               {selectedService || searchQuery
+//                 ? 'No services match the current filter or search'
+//                 : 'No services found'}
+//             </p>
+//           )}
+//         </div>
+//       )}
+
+//       {/* Add Service Modal */}
+//       <AddItemModal
+//         isOpen={isAddServiceModalOpen}
+//         itemType="service"
+//         onClose={() => setIsAddServiceModalOpen(false)}
+//         onSubmit={handleAddServiceSubmit}
+//         theme={theme}
+//         isDark={isDark}
+//       />
+//     </div>
+//   );
+// }
+
+
+
+// src/components/env-matrix/hydra-application-level/projectsection.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
 import { Application, Project, Service } from '@/types';
 import ServiceSection from './servicesection';
-import AddItemModal from '@/components/env-matrix/hydra-application-level/additemmodal';
+import AddItemModal from './additemmodal';
 import { ChevronDown, ChevronRight, FolderOpen, Edit2, Save, X } from 'lucide-react';
 
 interface ProjectSectionProps {
@@ -1070,7 +1312,8 @@ export default function ProjectSection({
               </div>
             </>
           )}
-          {isEditing && !isEditingProject && (
+          {/* ✅ FIXED: Show Add Service button ONLY when isEditingProject = true */}
+          {isEditingProject && (
             <button
               onClick={(e) => {
                 e.stopPropagation();

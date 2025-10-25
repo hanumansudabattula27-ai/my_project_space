@@ -1310,13 +1310,266 @@
 
 
 
+// // src/components/env-matrix/hydra-application-level/servicesection.tsx
+// 'use client';
+
+// import { useState, useEffect } from 'react';
+// import { Application, Service, Environment } from '@/types';
+// import EnvironmentSection from './environmentsection';
+// import AddItemModal from '@/components/env-matrix/hydra-application-level/additemmodal';
+// import { ChevronDown, ChevronRight, Activity, Edit2, Save, X } from 'lucide-react';
+
+// interface ServiceSectionProps {
+//   service: Service;
+//   serviceIndex: number;
+//   projectIndex: number;
+//   application: Application;
+//   onUpdate: (app: Application) => void;
+//   isEditing: boolean;
+//   theme: any;
+//   isDark: boolean;
+//   searchQuery: string;
+//   isExpanded: boolean;
+//   onServiceOpen: (index: number) => void;
+// }
+
+// export default function ServiceSection({
+//   service,
+//   serviceIndex,
+//   projectIndex,
+//   application,
+//   onUpdate,
+//   isEditing,
+//   theme,
+//   isDark,
+//   searchQuery,
+//   isExpanded,
+//   onServiceOpen,
+// }: ServiceSectionProps) {
+//   const [isEditingService, setIsEditingService] = useState(false);
+//   const [editedService, setEditedService] = useState(service);
+//   const [expandedEnvIndex, setExpandedEnvIndex] = useState<number | null>(null);
+//   const [isAddEnvironmentModalOpen, setIsAddEnvironmentModalOpen] = useState(false);
+
+//   // Reset local edit state when global isEditing becomes false
+//   useEffect(() => {
+//     if (!isEditing) {
+//       setIsEditingService(false);
+//       setEditedService(service);
+//     }
+//   }, [isEditing, service]);
+
+//   const updateService = (updatedService: Service) => {
+//     const updatedProjects = [...application.Projects];
+//     const updatedServices = [...updatedProjects[projectIndex].services];
+//     updatedServices[serviceIndex] = updatedService;
+//     updatedProjects[projectIndex] = {
+//       ...updatedProjects[projectIndex],
+//       services: updatedServices,
+//     };
+//     onUpdate({ ...application, Projects: updatedProjects });
+//   };
+
+//   const handleSave = () => {
+//     updateService(editedService);
+//     setIsEditingService(false);
+//   };
+
+//   const handleCancel = () => {
+//     setEditedService(service);
+//     setIsEditingService(false);
+//   };
+
+//   const handleToggle = () => {
+//     onServiceOpen(serviceIndex);
+//   };
+
+//   const handleEnvOpen = (envIndex: number) => {
+//     setExpandedEnvIndex(expandedEnvIndex === envIndex ? null : envIndex);
+//   };
+
+//   const handleAddEnvironmentSubmit = (newEnvironmentData: Environment) => {
+//     const updatedEnvironments = [...(service.environments || []), newEnvironmentData];
+//     const updatedServiceWithEnv = { ...service, environments: updatedEnvironments };
+//     updateService(updatedServiceWithEnv);
+//     // Auto-expand to show new environment
+//     onServiceOpen(serviceIndex);
+//     setIsAddEnvironmentModalOpen(false);
+//   };
+
+//   // Filter environments
+//   const filteredEnvironments = service.environments?.filter(env => {
+//     if (!searchQuery) return true;
+//     const searchLower = searchQuery.toLowerCase();
+//     const envText = JSON.stringify(env).toLowerCase();
+//     return envText.includes(searchLower);
+//   }) || [];
+
+//   const hasMatchingEnv = searchQuery && filteredEnvironments.length > 0;
+//   const shouldAutoExpand = hasMatchingEnv && !isExpanded;
+
+//   const isHighlighted = searchQuery && 
+//     service.serviceName.toLowerCase().includes(searchQuery.toLowerCase());
+
+//   return (
+//     <div className={`border rounded-lg overflow-hidden ${
+//       isHighlighted 
+//         ? isDark ? 'border-yellow-500' : 'border-yellow-400'
+//         : isDark ? 'border-slate-600' : 'border-gray-300'
+//     }`}>
+//       {/* Service Header - FIXED: No nested buttons */}
+//       <div className={`w-full flex items-center justify-between p-4 ${
+//         isDark ? 'bg-slate-700/30 hover:bg-slate-700/50' : 'bg-gray-50 hover:bg-gray-100'
+//       }`}>
+//         {/* Left Side - Clickable Toggle Area */}
+//         <button
+//           onClick={handleToggle}
+//           className="flex items-center gap-3 hover:opacity-80 transition-all flex-1"
+//         >
+//           {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+//           <Activity size={20} className={isDark ? 'text-cyan-400' : 'text-cyan-600'} />
+//           <div className="text-left">
+//             {isEditingService ? (
+//               <div className="space-y-2" onClick={(e) => e.stopPropagation()}>
+//                 <input
+//                   type="text"
+//                   value={editedService.serviceName}
+//                   onChange={(e) => setEditedService({ ...editedService, serviceName: e.target.value })}
+//                   className={`text-base font-bold px-2 py-1 ${theme.input} rounded border`}
+//                   placeholder="Service Name"
+//                 />
+//                 <input
+//                   type="text"
+//                   value={editedService.applicationDomain}
+//                   onChange={(e) => setEditedService({ ...editedService, applicationDomain: e.target.value })}
+//                   className={`text-sm px-2 py-1 ${theme.input} rounded border`}
+//                   placeholder="Domain"
+//                 />
+//               </div>
+//             ) : (
+//               <>
+//                 <h4 className={`text-base font-bold ${theme.text} ${isHighlighted ? 'text-yellow-500' : ''}`}>
+//                   {service.serviceName}
+//                 </h4>
+//                 <p className={`text-sm ${theme.textSecondary} mt-1`}>
+//                   {service.applicationDomain} • {filteredEnvironments.length} env{filteredEnvironments.length !== 1 ? 's' : ''}
+//                 </p>
+//               </>
+//             )}
+//           </div>
+//         </button>
+
+//         {/* Right Side - Action Buttons */}
+//         <div className="flex items-center gap-2">
+//           {isEditing && !isEditingService && (
+//             <div
+//               onClick={(e) => {
+//                 e.stopPropagation();
+//                 setIsEditingService(true);
+//               }}
+//               className={`p-2 rounded hover:bg-opacity-80 cursor-pointer ${isDark ? 'hover:bg-slate-600' : 'hover:bg-gray-200'}`}
+//             >
+//               <Edit2 size={14} className={theme.textSecondary} />
+//             </div>
+//           )}
+//           {isEditingService && (
+//             <>
+//               <div
+//                 onClick={(e) => {
+//                   e.stopPropagation();
+//                   handleSave();
+//                 }}
+//                 className="p-2 bg-green-600 text-white rounded hover:bg-green-700 cursor-pointer"
+//               >
+//                 <Save size={14} />
+//               </div>
+//               <div
+//                 onClick={(e) => {
+//                   e.stopPropagation();
+//                   handleCancel();
+//                 }}
+//                 className="p-2 bg-gray-600 text-white rounded hover:bg-gray-700 cursor-pointer"
+//               >
+//                 <X size={14} />
+//               </div>
+//             </>
+//           )}
+//           {isEditing && !isEditingService && (
+//             <button
+//               onClick={(e) => {
+//                 e.stopPropagation();
+//                 setIsAddEnvironmentModalOpen(true);
+//               }}
+//               className={`px-3 py-2 rounded text-sm font-semibold ${theme.accent} text-white hover:scale-105 transition-all`}
+//             >
+//               + Env
+//             </button>
+//           )}
+//           <span className={`px-3 py-1 rounded text-sm font-bold ${
+//             isDark ? 'bg-cyan-900/30 text-cyan-300' : 'bg-cyan-100 text-cyan-700'
+//           }`}>
+//             {service.environments?.length || 0}
+//           </span>
+//         </div>
+//       </div>
+
+//       {/* Service Content */}
+//       {(isExpanded || shouldAutoExpand) && (
+//         <div className="p-4 pt-0 space-y-3">
+//           {filteredEnvironments.length > 0 ? (
+//             filteredEnvironments.map((environment, index) => {
+//               const originalIndex = service.environments.findIndex(e => e.environmentName === environment.environmentName);
+//               return (
+//                 <EnvironmentSection
+//                   key={originalIndex}
+//                   environment={environment}
+//                   envIndex={originalIndex}
+//                   serviceIndex={serviceIndex}
+//                   projectIndex={projectIndex}
+//                   application={application}
+//                   onUpdate={onUpdate}
+//                   isEditing={isEditing}
+//                   theme={theme}
+//                   isDark={isDark}
+//                   searchQuery={searchQuery}
+//                   isExpanded={expandedEnvIndex === originalIndex}
+//                   onEnvOpen={handleEnvOpen}
+//                 />
+//               );
+//             })
+//           ) : (
+//             <p className={`text-center py-4 text-sm ${theme.textSecondary}`}>
+//               No environments match the search
+//             </p>
+//           )}
+//         </div>
+//       )}
+
+//       {/* Add Environment Modal */}
+//       <AddItemModal
+//         isOpen={isAddEnvironmentModalOpen}
+//         itemType="environment"
+//         onClose={() => setIsAddEnvironmentModalOpen(false)}
+//         onSubmit={handleAddEnvironmentSubmit}
+//         theme={theme}
+//         isDark={isDark}
+//       />
+//     </div>
+//   );
+// }
+
+
+
+
+
+
 // src/components/env-matrix/hydra-application-level/servicesection.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
 import { Application, Service, Environment } from '@/types';
 import EnvironmentSection from './environmentsection';
-import AddItemModal from '@/components/env-matrix/hydra-application-level/additemmodal';
+import AddItemModal from './additemmodal';
 import { ChevronDown, ChevronRight, Activity, Edit2, Save, X } from 'lucide-react';
 
 interface ServiceSectionProps {
@@ -1494,7 +1747,8 @@ export default function ServiceSection({
               </div>
             </>
           )}
-          {isEditing && !isEditingService && (
+          {/* ✅ FIXED: Show Add Environment button ONLY when isEditingService = true */}
+          {isEditingService && (
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -1557,4 +1811,3 @@ export default function ServiceSection({
     </div>
   );
 }
-
