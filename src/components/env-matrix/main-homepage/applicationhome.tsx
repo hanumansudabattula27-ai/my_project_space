@@ -569,8 +569,6 @@ export default function ApplicationHome() {
         onClose={() => setIsModalOpen(false)}
         onSuccess={handleModalSuccess}
       />
-
-      {/* HERO SECTION - COMPACT */}
       <section className="max-w-7xl mx-auto pt-6 pb-4">
         <div className="text-center max-w-4xl mx-auto mb-6">
           <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${isDark ? 'bg-teal-900/30 border-teal-800' : 'bg-teal-100 border-teal-200'} border mb-3`}>
@@ -594,8 +592,6 @@ export default function ApplicationHome() {
           </p>
         </div>
       </section>
-
-      {/* SEARCH & ACTIONS - BETTER PROPORTIONS */}
       <section className="max-w-6xl mx-auto mb-6">
   <div className="flex items-center gap-3">
     {/* SmartSearch - Takes most space */}
@@ -620,7 +616,6 @@ export default function ApplicationHome() {
     </button>
   </div>
 </section>
-      {/* PLATFORMS - BETTER SPACING */}
       <section className="max-w-7xl mx-auto py-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {platformsWithStats.map((platform) => (

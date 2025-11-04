@@ -478,6 +478,22 @@ const internalTools = [
     color: "orange",
     status: "active"
   },
+  {
+    name: "PRR Tool",
+    description: "Environment configuration matrix",
+    href: "/tools/prr",
+    icon: Grid3x3,
+    color: "orange",
+    status: "active"
+  },
+  {
+    name: "Base64 Utility",
+    description: "Environment configuration matrix",
+    href: "/tools/base64",
+    icon: Grid3x3,
+    color: "orange",
+    status: "active"
+  }
 ];
 
 const colorClasses = {
